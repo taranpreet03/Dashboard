@@ -39,7 +39,7 @@ const ProductTable = ({ products }) => {
         <div className="flex justify-center items-center">
           <button
             onClick={() => setSelectedProduct(row)}
-            className="px-4 py-2 text-sm bg-blue-600 rounded hover:bg-blue-700"
+            className="px-4 py-2 text-sm  rounded"
           >
             View
           </button>
