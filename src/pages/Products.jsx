@@ -68,7 +68,7 @@ return (
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder={activeTab === "products" ? "Search by product..." : "Search by category..."}
-          className="w-80"
+          className="w-80 "
         />
 
         <Button
