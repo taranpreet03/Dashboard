@@ -1,60 +1,68 @@
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../services/productApi";
 import ProductTable from "../components/Product/ProductTable";
-//import { FaSearch } from "react-icons/fa";
 import filterIcon from "../assets/Images/Vector.svg";
 import FilterPop from "../components/Filterpopup";
 import SearchInput from "../Core/Search";
 import Button from "../Core/Button";
-import CategoryTable from "../components/Categories/CategoriesTable";
-import { fetchCategories } from "../services/categoriesApi";
+import CartsTable from "../components/Carts/CartsTable";
+import { fetchCarts } from "../services/CartsApi";
 
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [carts, setCarts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [showFilter, setShowFilter] = useState(false);
-const [categories, setCategories] = useState([]);
-const [activeTab, setActiveTab] = useState("products");
+  const [activeTab, setActiveTab] = useState("products");
 
-//Product
   const [filters, setFilters] = useState({
-    category: [],
     brand: [],
     size: [],
     price: 1000,
-    parentId: [],
-    name: [],
+    cartId: [],
+    quantity: 0,
   });
 
-//Fetching
- useEffect(() => {
-    const getProducts = async () => setProducts(await fetchProducts());
-    const getCategories = async () => setCategories(await fetchCategories());
-    getProducts();
-    getCategories();
+  useEffect(() => {
+    const getData = async () => {
+      setProducts(await fetchProducts());
+      setCarts(await fetchCarts());
+    };
+    getData();
   }, []);
 
+
+
+
   const filteredProducts = products.filter((item) => {
-    const matchSearch = item.title.toLowerCase().includes(searchText.toLowerCase());
-    const matchCategory = filters.category.length === 0 || filters.category.includes(item.category);
-    const matchBrand = filters.brand.length === 0 || filters.brand.includes(item.brand);
-    const matchSize = filters.size.length === 0 || item.size?.some((s) => filters.size.includes(s));
+    const matchSearch = item.title
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+    const matchBrand =
+      filters.brand.length === 0 || filters.brand.includes(item.brand);
+    const matchSize =
+      filters.size.length === 0 ||
+      item.size?.some((s) => filters.size.includes(s));
     const matchPrice = item.price <= filters.price;
-    return matchSearch && matchCategory && matchBrand && matchSize && matchPrice;
+
+    return matchSearch && matchBrand && matchSize && matchPrice;
   });
 
-  const filteredCategories = categories.filter((cat) => {
-    const matchSearch = cat.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchParent = filters.parentId.length === 0 || filters.parentId.includes(cat.parentId);
-    const matchName = filters.name.length === 0 || filters.name.includes(cat.name);
-    return matchSearch && matchParent && matchName;
+  const filteredCarts = carts.filter((cart) => {
+    const matchSearch = cart.id
+      .toString()
+      .includes(searchText.toLowerCase());
+    const matchCartId =
+      filters.cartId.length === 0 || filters.cartId.includes(cart.id);
+    const matchQuantity = cart.totalQuantity >= filters.quantity;
+
+    return matchSearch && matchCartId && matchQuantity;
   });
-  
 
   const brands = [...new Set(products.map((p) => p.brand))];
 
-return (
+  return (
     <div className="h-screen overflow-hidden text-[#3A4752] mr-5">
       <div className="flex items-center gap-3 mb-4 bg-white p-4 border border-[#F2F4F7] rounded-md">
         <div
@@ -67,35 +75,52 @@ return (
         <SearchInput
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          placeholder={activeTab === "products" ? "Search by product..." : "Search by category..."}
-          className="w-80 "
+          placeholder={
+            activeTab === "products"
+              ? "Search by product..."
+              : "Search by cart..."
+          }
+          className="w-80"
         />
 
         <Button
           text="Products"
           onClick={() => setActiveTab("products")}
-          className={activeTab === "products" ? "bg-[#0B1843] text-white" : "bg-[#F2F4F7] text-[#3A4752]"}
+          className={
+            activeTab === "products"
+              ? "bg-[#0B1843] text-white"
+              : "bg-[#F2F4F7]"
+          }
         />
         <Button
-          text="Categories"
-          onClick={() => setActiveTab("categories")}
-          className={activeTab === "categories" ? "bg-[#0B1843] text-white" : "bg-[#F2F4F7] text-[#3A4752]"}
+          text="Carts"
+          onClick={() => setActiveTab("carts")}
+          className={
+            activeTab === "carts"
+              ? "bg-[#0B1843] text-white"
+              : "bg-[#F2F4F7]"
+          }
         />
       </div>
 
-      {/* Table */}
-      {activeTab === "products" && <ProductTable products={filteredProducts} />}
-      {activeTab === "categories" && <CategoryTable categories={filteredCategories} />}
+       {activeTab === "products" && (
+        <ProductTable products={filteredProducts} />
+      )}
+      {activeTab === "carts" && (
+        <CartsTable carts={filteredCarts} />
+      )} 
 
-      {/* FILTER POPUP */}
+      
+
+
       <FilterPop
         show={showFilter}
         onClose={() => setShowFilter(false)}
         filters={filters}
         setFilters={setFilters}
         brands={brands}
-        activeTab={activeTab} 
-        categories={categories} 
+        carts={carts}
+        activeTab={activeTab}
       />
     </div>
   );

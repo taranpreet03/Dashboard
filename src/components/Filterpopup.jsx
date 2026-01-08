@@ -1,30 +1,40 @@
 import { useState, useEffect } from "react";
 import Button from "../Core/Button";
 
-const FilterPop = ({ show, onClose, filters, setFilters, brands, activeTab, categories }) => {
+const FilterPop = ({
+  show,
+  onClose,
+  filters,
+  setFilters,
+  brands,
+  carts = [],
+  activeTab,
+}) => {
   const [activeFilter, setActiveFilter] = useState("");
   const [tempFilters, setTempFilters] = useState(filters);
 
   useEffect(() => {
     if (show) {
       setTempFilters(filters);
-      setActiveFilter(activeTab === "products" ? "size" : "parentId");
+      setActiveFilter(activeTab === "products" ? "size" : "cartId");
     }
   }, [show, filters, activeTab]);
 
   if (!show) return null;
 
   const toggleValue = (key, value) => {
-    setTempFilters({
-      ...tempFilters,
-      [key]: tempFilters[key].includes(value)
-        ? tempFilters[key].filter((v) => v !== value)
-        : [...tempFilters[key], value],
-    });
+    setTempFilters((prev) => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter((v) => v !== value)
+        : [...prev[key], value],
+    }));
   };
 
-  // Filters menu
-  const menuItems = activeTab === "products" ? ["size", "brand", "price", "category"] : ["parentId", "name"];
+  const menuItems =
+    activeTab === "products"
+      ? ["size", "brand", "price"]
+      : ["cartId", "quantity"];
 
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
@@ -46,7 +56,7 @@ const FilterPop = ({ show, onClose, filters, setFilters, brands, activeTab, cate
 
         {/* RIGHT CONTENT */}
         <div className="w-2/3 p-6 relative">
-          {/* PRODUCTS FILTER */}
+          {/* PRODUCT FILTERS */}
           {activeTab === "products" && activeFilter === "size" && (
             <>
               <h3 className="font-semibold mb-4">Select Size</h3>
@@ -68,7 +78,7 @@ const FilterPop = ({ show, onClose, filters, setFilters, brands, activeTab, cate
           {activeTab === "products" && activeFilter === "brand" && (
             <>
               <h3 className="font-semibold mb-4">Select Brand</h3>
-              <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2">
+              <div className="space-y-3 max-h-[220px] overflow-y-auto">
                 {brands.map((brand) => (
                   <label key={brand} className="flex gap-2 items-center">
                     <input
@@ -85,83 +95,74 @@ const FilterPop = ({ show, onClose, filters, setFilters, brands, activeTab, cate
 
           {activeTab === "products" && activeFilter === "price" && (
             <>
-              <h3 className="font-semibold mb-4">Price up to ₹{tempFilters.price}</h3>
+              <h3 className="font-semibold mb-4">
+                Price up to ₹{tempFilters.price}
+              </h3>
               <input
                 type="range"
                 min="0"
                 max="2000"
                 value={tempFilters.price}
-                onChange={(e) => setTempFilters({ ...tempFilters, price: +e.target.value })}
+                onChange={(e) =>
+                  setTempFilters({
+                    ...tempFilters,
+                    price: +e.target.value,
+                  })
+                }
                 className="w-full"
               />
             </>
           )}
 
-          {activeTab === "products" && activeFilter === "category" && (
+          {/* CART FILTERS */}
+          {activeTab === "carts" && activeFilter === "cartId" && (
             <>
-              <h3 className="font-semibold mb-4">Select Category</h3>
-              <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2">
-                {[...new Set(categories.map((cat) => cat.name))].map((catName) => (
-                  <label key={catName} className="flex gap-2 items-center">
+              <h3 className="font-semibold mb-4">Select Cart ID</h3>
+              <div className="space-y-3 max-h-[220px] overflow-y-auto">
+                {carts.map((cart) => (
+                  <label key={cart.id} className="flex gap-2 items-center">
                     <input
                       type="checkbox"
-                      checked={tempFilters.category.includes(catName)}
-                      onChange={() => toggleValue("category", catName)}
+                      checked={tempFilters.cartId.includes(cart.id)}
+                      onChange={() => toggleValue("cartId", cart.id)}
                     />
-                    {catName}
+                    Cart #{cart.id}
                   </label>
                 ))}
               </div>
             </>
           )}
 
-          {/* CATEGORIES FILTER */}
-          {activeTab === "categories" && activeFilter === "parentId" && (
+          {activeTab === "carts" && activeFilter === "quantity" && (
             <>
-              <h3 className="font-semibold mb-4">Select Parent ID</h3>
-              <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2">
-                {[...new Set(categories.map((cat) => cat.parentId))].map((id) => (
-                  <label key={id} className="flex gap-2 items-center">
-                    <input
-                      type="checkbox"
-                      checked={tempFilters.parentId.includes(id)}
-                      onChange={() => toggleValue("parentId", id)}
-                    />
-                    {id}
-                  </label>
-                ))}
-              </div>
-            </>
-          )}
-
-          {activeTab === "categories" && activeFilter === "name" && (
-            <>
-              <h3 className="font-semibold mb-4">Select Name</h3>
-              <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2">
-                {[...new Set(categories.map((cat) => cat.name))].map((name) => (
-                  <label key={name} className="flex gap-2 items-center">
-                    <input
-                      type="checkbox"
-                      checked={tempFilters.name.includes(name)}
-                      onChange={() => toggleValue("name", name)}
-                    />
-                    {name}
-                  </label>
-                ))}
-              </div>
+              <h3 className="font-semibold mb-4">
+                Minimum Quantity: {tempFilters.quantity}
+              </h3>
+              <input
+                type="range"
+                min="0"
+                max="50"
+                value={tempFilters.quantity}
+                onChange={(e) =>
+                  setTempFilters({
+                    ...tempFilters,
+                    quantity: +e.target.value,
+                  })
+                }
+                className="w-full"
+              />
             </>
           )}
 
           {/* ACTIONS */}
           <div className="absolute bottom-6 right-6 flex gap-3">
-            <Button text="Cancel" onClick={onClose} className="px-4 py-2 hover:bg-[#DCE4FF]" />
+            <Button text="Cancel" onClick={onClose} />
             <Button
               text="Apply"
               onClick={() => {
                 setFilters(tempFilters);
                 onClose();
               }}
-              className="px-4 py-2 hover:bg-[#DCE4FF]"
             />
           </div>
         </div>
