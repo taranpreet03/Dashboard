@@ -1,10 +1,6 @@
 const Table = ({ columns = [], data = [] }) => {
   if (!data.length) {
-    return (
-      <div className="text-center py-4 text-gray-500">
-        No data found
-      </div>
-    );
+    return <div className="text-center py-4 text-gray-500">No data found</div>;
   }
 
   return (
@@ -15,7 +11,7 @@ const Table = ({ columns = [], data = [] }) => {
             {columns.map((col, index) => (
               <th
                 key={index}
-                className="border border-[#F2F4F7] px-3 py-2 text-left font-normal"
+                className="px-4 py-2 text-sm font-medium text-black rounded hover:bg-[#DCE4FF] transition"
               >
                 {col.header}
               </th>
@@ -27,16 +23,16 @@ const Table = ({ columns = [], data = [] }) => {
           {data.map((row, rowIndex) => (
             <tr
               key={row._id || rowIndex}
-              className="hover:bg-gray-50 fornt-normal"
+              className=""
             >
               {columns.map((col, colIndex) => (
                 <td
                   key={colIndex}
-                  className="border border-[#F2F4F7]  px-3 py-2"
+                  className={`border border-[#F2F4F7] px-3 py-2 ${
+                    col.header === "Action" ? "bg-white hover:bg-white" : ""
+                  }`}
                 >
-                  {col.render
-                    ? col.render(row, rowIndex)
-                    : row[col.accessor]}
+                  {col.render ? col.render(row, rowIndex) : row[col.accessor]}
                 </td>
               ))}
             </tr>

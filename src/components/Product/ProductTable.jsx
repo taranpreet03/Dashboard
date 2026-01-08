@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Table from "../../Core/Table";
 import ProductDetailsModal from "./ProductDetailsModal";
+
 const ProductTable = ({ products }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -34,12 +35,13 @@ const ProductTable = ({ products }) => {
       accessor: "brand",
     },
     {
-      header: "Action",
+     header: "Action",
       render: (row) => (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center">
           <button
+            type="button"
             onClick={() => setSelectedProduct(row)}
-            className="px-4 py-2 text-sm  rounded"
+            className="px-4 py-2 text-sm font-medium text-black bg-gray-200 rounded hover:bg-[#DCE4FF] transition duration-200"
           >
             View
           </button>
@@ -50,10 +52,16 @@ const ProductTable = ({ products }) => {
 
   return (
     <>
-    <Table columns={columns} data={products} />
-    <ProductDetailsModal product={selectedProduct}onClose={() => setSelectedProduct(null)}/>
-      </>
-  )
+      <Table columns={columns} data={products} />
+
+      {selectedProduct && (
+        <ProductDetailsModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+    </>
+  );
 };
 
 export default ProductTable;
