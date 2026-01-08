@@ -55,7 +55,7 @@ const [activeTab, setActiveTab] = useState("products");
   const brands = [...new Set(products.map((p) => p.brand))];
 
 return (
-    <div className="h-screen overflow-auto text-[#3A4752]">
+    <div className="h-screen overflow-hidden text-[#3A4752] mr-5">
       <div className="flex items-center gap-3 mb-4 bg-white p-4 border border-[#F2F4F7] rounded-md">
         <div
           className="flex items-center justify-center w-10 h-10 cursor-pointer"
