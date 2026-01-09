@@ -1,9 +1,14 @@
 import { useState } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
+import CartsDetailModal from "./CartsDetailModal";
+import { FiMoreHorizontal } from "react-icons/fi";
 
-const CartsTable = ({ carts, onView }) => {
-  //Pagination
+const CartsTable = ({ carts }) => {
+  const [selectedCart, setSelectedCart] = useState(null);
+  const [activeRowId, setActiveRowId] = useState(null);
+
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 8;
 
@@ -38,16 +43,46 @@ const CartsTable = ({ carts, onView }) => {
     },
     {
       header: "Action",
-      render: (row) => (
-        <div className="flex justify-center">
-          <button
-            onClick={() => onView?.(row)}
-            className="px-4 py-1 text-sm bg-gray-200 rounded hover:bg-[#DCE4FF]"
-          >
-            View
-          </button>
-        </div>
-      ),
+      render: (row) => {
+        const rowId = row.id; // carts use `id`
+
+        return (
+          <div className="relative flex justify-center">
+            {/* three dots */}
+            <button
+              onClick={() =>
+                setActiveRowId(activeRowId === rowId ? null : rowId)
+              }
+              className="bg-transparent p-0 border-none outline-none"
+            >
+              <FiMoreHorizontal size={18} />
+            </button>
+
+            {activeRowId === rowId && (
+              <div className="absolute top-8 right-0 w-44 bg-white rounded-lg shadow-md p-2 z-20">
+                <button
+                  onClick={() => {
+                    setSelectedCart(row);
+                    setActiveRowId(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
+                >
+                  View
+                </button>
+                 <button
+                  onClick={() => {
+                    setSelectedCart(row);
+                    setActiveRowId(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -60,6 +95,13 @@ const CartsTable = ({ carts, onView }) => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+
+      {selectedCart && (
+        <CartsDetailModal
+          cart={selectedCart}
+          onClose={() => setSelectedCart(null)}
+        />
+      )}
     </>
   );
 };
