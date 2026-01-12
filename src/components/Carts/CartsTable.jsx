@@ -1,54 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import CartsDetailModal from "./CartsDetailModal";
+import EditCartModal from "./EditCartModal";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 const CartsTable = ({ carts }) => {
+  
+  const [cartList, setCartList] = useState([]);
   const [selectedCart, setSelectedCart] = useState(null);
+  const [editCart, setEditCart] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
+
+
+  useEffect(() => {
+    setCartList(carts);
+  }, [carts]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 8;
-
-  const totalPages = Math.ceil(carts.length / itemPerPage);
+  const totalPages = Math.ceil(cartList.length / itemPerPage);
   const startIndex = (currentPage - 1) * itemPerPage;
 
-  const paginatedCarts = carts.slice(
+  const paginatedCarts = cartList.slice(
     startIndex,
     startIndex + itemPerPage
   );
 
+ 
+  const handleSaveCart = (updatedCart) => {
+    setCartList((prev) =>
+      prev.map((c) =>
+        c.id === updatedCart.id ? updatedCart : c
+      )
+    );
+  };
+
   const columns = [
-    {
-      header: "Cart ID",
-      accessor: "id",
-    },
-    {
-      header: "Total Products",
-      accessor: "totalProducts",
-    },
-    {
-      header: "Total Quantity",
-      accessor: "totalQuantity",
-    },
-    {
-      header: "Total ($)",
-      accessor: "total",
-    },
-    {
-      header: "Discounted ($)",
-      accessor: "discountedTotal",
-    },
+    { header: "Cart ID", accessor: "id" },
+    { header: "Total Products", accessor: "totalProducts" },
+    { header: "Total Quantity", accessor: "totalQuantity" },
+    { header: "Total ($)", accessor: "total" },
+    { header: "Discounted ($)", accessor: "discountedTotal" },
     {
       header: "Action",
       render: (row) => {
-        const rowId = row.id; // carts use `id`
+        const rowId = row.id;
 
         return (
           <div className="relative flex justify-center">
-            {/* three dots */}
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
@@ -65,16 +66,17 @@ const CartsTable = ({ carts }) => {
                     setSelectedCart(row);
                     setActiveRowId(null);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-[#DCE4FF]"
                 >
                   View
                 </button>
-                 <button
+
+                <button
                   onClick={() => {
-                    setSelectedCart(row);
+                    setEditCart(row);  
                     setActiveRowId(null);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-[#DCE4FF]"
                 >
                   Edit
                 </button>
@@ -100,6 +102,14 @@ const CartsTable = ({ carts }) => {
         <CartsDetailModal
           cart={selectedCart}
           onClose={() => setSelectedCart(null)}
+        />
+      )}
+
+      {editCart && (
+        <EditCartModal
+          cart={editCart}
+          onClose={() => setEditCart(null)}
+          onSave={handleSaveCart}
         />
       )}
     </>

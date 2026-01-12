@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
@@ -6,21 +6,35 @@ import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 const ProductTable = ({ products }) => {
+
+  const [productList, setProductList] = useState([]);
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
 
+  
+  useEffect(() => {
+    setProductList(products);
+  }, [products]);
+
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
-
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  const paginatedProducts = products.slice(
+  const totalPages = Math.ceil(productList.length / itemsPerPage);
+  const paginatedProducts = productList.slice(
     startIndex,
     startIndex + itemsPerPage
   );
+
+  // Save functionality
+  const handleSaveProduct = (updatedProduct) => {
+    setProductList((prev) =>
+      prev.map((item) =>
+        item._id === updatedProduct._id ? updatedProduct : item
+      )
+    );
+  };
 
   const columns = [
     { header: "#", render: (_, i) => startIndex + i + 1 },
@@ -37,7 +51,6 @@ const ProductTable = ({ products }) => {
 
         return (
           <div className="relative flex justify-center">
-            {/* three dots – no background */}
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
@@ -48,29 +61,28 @@ const ProductTable = ({ products }) => {
             </button>
 
             {activeRowId === rowId && (
-  <div className="absolute top-8 right-0 w-44 bg-white rounded-lg shadow-md p-2 z-20">
-    <button
-      onClick={() => {
-        setViewProduct(row);
-        setActiveRowId(null);
-      }}
-      className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
-    >
-      View
-    </button>
+              <div className="absolute top-8 right-0 w-44 bg-white rounded-lg shadow-md p-2 z-20">
+                <button
+                  onClick={() => {
+                    setViewProduct(row);
+                    setActiveRowId(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-[#DCE4FF]"
+                >
+                  View
+                </button>
 
-    <button
-      onClick={() => {
-        setEditProduct(row);
-        setActiveRowId(null);
-      }}
-      className="w-full text-left px-3 py-2 rounded-md text-[#3A4752] hover:bg-[#DCE4FF]"
-    >
-      Edit
-    </button>
-  </div>
-)}
-
+                <button
+                  onClick={() => {
+                    setEditProduct(row);
+                    setActiveRowId(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-[#DCE4FF]"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
           </div>
         );
       },
@@ -98,6 +110,7 @@ const ProductTable = ({ products }) => {
         <EditProductModal
           product={editProduct}
           onClose={() => setEditProduct(null)}
+          onSave={handleSaveProduct}
         />
       )}
     </>
