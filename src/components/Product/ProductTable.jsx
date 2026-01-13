@@ -4,22 +4,26 @@ import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { fetchProducts } from "../../services/productApi";
 
-const ProductTable = ({ products }) => {
-
+const ProductTable = () => {
   const [productList, setProductList] = useState([]);
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
 
-  
+  // fetching
   useEffect(() => {
-    setProductList(products);
-  }, [products]);
+    const getProducts = async () => {
+      const data = await fetchProducts();
+      setProductList(data);
+    };
+    getProducts();
+  }, []);
 
-  // pagination
+  // pagination 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 8;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(productList.length / itemsPerPage);
   const paginatedProducts = productList.slice(
@@ -27,7 +31,7 @@ const ProductTable = ({ products }) => {
     startIndex + itemsPerPage
   );
 
-  // Save functionality
+  // Save functionality 
   const handleSaveProduct = (updatedProduct) => {
     setProductList((prev) =>
       prev.map((item) =>
@@ -91,8 +95,8 @@ const ProductTable = ({ products }) => {
 
   return (
     <>
+   
       <Table columns={columns} data={paginatedProducts} />
-
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

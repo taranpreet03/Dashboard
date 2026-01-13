@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../services/productApi";
-import ProductTable from "../components/Product/ProductTable";
-import ProductGrid from "../components/Product/ProductGrid";
-import CartsGrid from "../components/Carts/CartGrid";
-import filterIcon from "../assets/Images/Vector.svg";
-import FilterPop from "../components/Filterpopup";
-import SearchInput from "../Core/Search";
-import Button from "../Core/Button";
-import CartsTable from "../components/Carts/CartsTable";
+import { fetchProducts } from "../../services/productApi";
+import ProductTable from "../../components/Product/ProductTable";
+import ProductGrid from "../../components/Product/ProductGrid";
+import CartsGrid from "../../components/Carts/CartGrid";
+import filterIcon from "../../assets/Images/Vector.svg";
+import FilterPop from "../../components/Filterpopup";
+import SearchInput from "../../Core/Search";
+import Button from "../../Core/Button";
+import CartsTable from "../../components/Carts/CartsTable";
 
-import { fetchCarts } from "../services/CartsApi";
+import { fetchCarts } from "../../services/CartsApi";
 import { FaList, FaThLarge } from "react-icons/fa";
 
 const Products = () => {
@@ -92,14 +92,17 @@ const Products = () => {
           className={
             activeTab === "products"
               ? "bg-[#0B1843] text-white"
-              : "bg-[#F2F4F7]"
+              : "bg-[#F2F4F7] text-[#3A4752]"
           }
         />
+
         <Button
           text="Carts"
           onClick={() => setActiveTab("carts")}
           className={
-            activeTab === "carts" ? "bg-[#0B1843] text-white" : "bg-[#F2F4F7]"
+            activeTab === "carts"
+              ? "bg-[#0B1843] text-white"
+              : "bg-[#F2F4F7] text-[#3A4752]"
           }
         />
 
