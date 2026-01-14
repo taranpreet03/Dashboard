@@ -86,25 +86,26 @@ const Products = () => {
         />
 
         {/* Tabs */}
-        <Button
-          text="Products"
-          onClick={() => setActiveTab("products")}
-          className={
-            activeTab === "products"
-              ? "bg-[#0B1843] text-white"
-              : "bg-[#F2F4F7] text-[#3A4752]"
-          }
-        />
+<Button
+  text="Products"
+  onClick={() => setActiveTab("products")}
+  className={
+    activeTab === "products"
+      ? "bg-[#0B1843] text-black"
+      : "bg-blue text-[#3A4752] "
+  }
+/>
 
-        <Button
-          text="Carts"
-          onClick={() => setActiveTab("carts")}
-          className={
-            activeTab === "carts"
-              ? "bg-[#0B1843] text-white"
-              : "bg-[#F2F4F7] text-[#3A4752]"
-          }
-        />
+<Button
+  text="Carts"
+  onClick={() => setActiveTab("carts")}
+  className={
+    activeTab === "carts"
+      ? "bg-[#0B1843] text-black"
+      : "bg-white text-[#3A4752] "
+  }
+/>
+
 
         <div className="flex gap-1 ml-auto rounded-md p-1">
           <button
