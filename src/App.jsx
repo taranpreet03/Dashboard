@@ -7,24 +7,36 @@ import Home from "./components/Home/Home";
 import ProductPage from "./components/Product/ProductTable";
 import CartPage from "./components/Carts/CartsTable";
 import PostPage from "./components/Post/PostTable";
-import AlbumPage from "./components/Album/AlbumTable"
+import AlbumPage from "./components/Album/AlbumTable";
+import { useTheme } from "./context/ThemeContext";
+
 function App() {
+  const { theme } = useTheme();
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div
+      className={`flex h-screen overflow-hidden ${
+        theme === "dark"
+          ? "bg-[#1B211A] text-white"
+          : "bg-white text-[#3A4752]"
+      }`}
+    >
       <Sidebar />
+
       <div className="ml-12 w-full px-6 flex flex-col overflow-hidden">
         <Navbar />
+
         <main className="ml-10 w-full p-6 flex-1 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductPage />} />
-            <Route path="/carts" element={<CartPage/>}/>
-            <Route path="/posts" element={<PostPage/>}/>
-            <Route path="/album" element={<AlbumPage/>}/>
+            <Route path="/carts" element={<CartPage />} />
+            <Route path="/posts" element={<PostPage />} />
+            <Route path="/album" element={<AlbumPage />} />
           </Routes>
         </main>
       </div>
-    </div> 
+    </div>
   );
 }
 
