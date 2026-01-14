@@ -11,6 +11,9 @@ import CartsTable from "../../components/Carts/CartsTable";
 import { fetchCarts } from "../../services/CartsApi";
 import { FaList, FaThLarge } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
 
 const Products = () => {
   const { theme } = useTheme();
@@ -66,9 +69,7 @@ const Products = () => {
   return (
     <div
       className={`h-screen overflow-hidden mr-5 ${
-        theme === "dark"
-          ? "bg-[#1B211A] text-white"
-          : "bg-white text-[#3A4752]"
+        theme === "dark" ? "bg-[#1B211A] text-white" : "bg-white text-[#3A4752]"
       }`}
     >
       {/* TOP BAR */}
@@ -97,16 +98,19 @@ const Products = () => {
               : "Search by cart..."
           }
           className={`w-80 ${
-    theme === "dark"
-      ? "bg-[#1B211A] text-white/80 border border-white/20 placeholder-white/50"
-      : "bg-white text-[#3A4752] border border-gray-300 placeholder-gray-400"
-  }`}
+            theme === "dark"
+              ? "bg-[#1B211A] text-white/80 border border-white/20 placeholder-white/50"
+              : "bg-white text-[#3A4752] border border-gray-300 placeholder-gray-400"
+          }`}
         />
 
         {/* Tabs */}
         <Button
           text="Products"
-          onClick={() => setActiveTab("products")}
+          onClick={() => {
+            //setActiveTab("products");
+            navigate("/products");
+          }}
           className={
             activeTab === "products"
               ? "bg-[#0B1843] text-white"
@@ -115,10 +119,12 @@ const Products = () => {
               : "bg-white text-[#3A4752]"
           }
         />
-
         <Button
           text="Carts"
-          onClick={() => setActiveTab("carts")}
+          onClick={() => {
+            //setActiveTab("carts");
+            navigate("/carts");
+          }}
           className={
             activeTab === "carts"
               ? "bg-[#0B1843] text-white"
