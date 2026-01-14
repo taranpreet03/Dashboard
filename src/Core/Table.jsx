@@ -25,13 +25,7 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
     >
       {/* TABLE HEADER */}
       <table className="w-full border-collapse table-fixed">
-        <thead
-          className={
-            theme === "dark"
-              ? "bg-[#1B211A]"
-              : "bg-[#DCE4FF]"
-          }
-        >
+        <thead className={theme === "dark" ? "bg-[#1B211A]" : "bg-[#DCE4FF]"}>
           <tr>
             {columns.map((col, index) => (
               <th
@@ -57,9 +51,7 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
               <tr
                 key={row._id || rowIndex}
                 className={
-                  theme === "dark"
-                    ? "hover:bg-white/5"
-                    : "hover:bg-gray-50"
+                  theme === "dark" ? "hover:bg-white/5" : "hover:bg-gray-50"
                 }
               >
                 {columns.map((col, colIndex) => (
@@ -77,9 +69,7 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
                         : ""
                     }`}
                   >
-                    {col.render
-                      ? col.render(row, rowIndex)
-                      : row[col.accessor]}
+                    {col.render ? col.render(row, rowIndex) : row[col.accessor]}
                   </td>
                 ))}
               </tr>
