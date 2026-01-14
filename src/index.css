@@ -36,13 +36,7 @@ body {
 
 /* NAV BUTTONS */
 .nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
   font-size: 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
   cursor: pointer;
   width:150px
   

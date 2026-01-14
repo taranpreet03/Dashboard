@@ -5,11 +5,11 @@ const Button = ({ icon: Icon, text, onClick, className = "" }) => {
 
   const themeClasses =
     theme === "dark"
-      ? "bg-[#1B211A] border border-yellow-800 text-white "
-      : "bg-white border border-gray-300 text-[#3A4752]";
+      ? "bg-[#1B211A] text-white/80 border border-white/20"
+      : "bg-white text-[#3A4752] border border-gray-300";
 
   const iconClasses =
-    theme === "dark" ? " text-white" : "text-gray-600";
+    theme === "dark" ? "text-white/80" : "text-gray-600";
 
   return (
     <button

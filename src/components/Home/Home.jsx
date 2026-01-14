@@ -8,17 +8,18 @@ import FilterPop from "../../components/Filterpopup";
 import SearchInput from "../../Core/Search";
 import Button from "../../Core/Button";
 import CartsTable from "../../components/Carts/CartsTable";
-
 import { fetchCarts } from "../../services/CartsApi";
 import { FaList, FaThLarge } from "react-icons/fa";
+import { useTheme } from "../../context/ThemeContext";
 
 const Products = () => {
+  const { theme } = useTheme();
+
   const [products, setProducts] = useState([]);
   const [carts, setCarts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [activeTab, setActiveTab] = useState("products");
-
   const [viewType, setViewType] = useState("list");
 
   const [filters, setFilters] = useState({
@@ -63,8 +64,21 @@ const Products = () => {
   const brands = [...new Set(products.map((p) => p.brand))];
 
   return (
-    <div className="h-screen overflow-hidden text-[#3A4752] mr-5">
-      <div className="flex items-center gap-3 mb-4 bg-white p-4 border border-[#F2F4F7] rounded-md">
+    <div
+      className={`h-screen overflow-hidden mr-5 ${
+        theme === "dark"
+          ? "bg-[#1B211A] text-white"
+          : "bg-white text-[#3A4752]"
+      }`}
+    >
+      {/* TOP BAR */}
+      <div
+        className={`flex items-center gap-3 mb-4 p-4 rounded-md border ${
+          theme === "dark"
+            ? "bg-[#1B211A] border-white/20"
+            : "bg-white border-[#F2F4F7]"
+        }`}
+      >
         {/* Filter */}
         <div
           className="flex items-center justify-center w-10 h-10 cursor-pointer"
@@ -82,36 +96,50 @@ const Products = () => {
               ? "Search by product..."
               : "Search by cart..."
           }
-          className="w-80"
+          className={`w-80 ${
+    theme === "dark"
+      ? "bg-[#1B211A] text-white/80 border border-white/20 placeholder-white/50"
+      : "bg-white text-[#3A4752] border border-gray-300 placeholder-gray-400"
+  }`}
         />
 
         {/* Tabs */}
-<Button
-  text="Products"
-  onClick={() => setActiveTab("products")}
-  className={
-    activeTab === "products"
-      ? "bg-[#0B1843] text-black"
-      : "bg-blue text-[#3A4752] "
-  }
-/>
+        <Button
+          text="Products"
+          onClick={() => setActiveTab("products")}
+          className={
+            activeTab === "products"
+              ? "bg-[#0B1843] text-white"
+              : theme === "dark"
+              ? "bg-[#1B211A] text-white border border-white/50"
+              : "bg-white text-[#3A4752]"
+          }
+        />
 
-<Button
-  text="Carts"
-  onClick={() => setActiveTab("carts")}
-  className={
-    activeTab === "carts"
-      ? "bg-[#0B1843] text-black"
-      : "bg-white text-[#3A4752] "
-  }
-/>
+        <Button
+          text="Carts"
+          onClick={() => setActiveTab("carts")}
+          className={
+            activeTab === "carts"
+              ? "bg-[#0B1843] text-white"
+              : theme === "dark"
+              ? "bg-[#1B211A] text-white border border-white/20"
+              : "bg-white text-[#3A4752]"
+          }
+        />
 
-
+        {/* View Toggle */}
         <div className="flex gap-1 ml-auto rounded-md p-1">
           <button
             onClick={() => setViewType("list")}
             className={`p-2 rounded ${
-              viewType === "list" ? "bg-gray-200 text-black" : "text-gray-500"
+              viewType === "list"
+                ? theme === "dark"
+                  ? "bg-[#1B211A] text-white/80 border border-white/20"
+                  : "bg-gray-200 text-black"
+                : theme === "dark"
+                ? "bg-[#1B211A] text-white/60"
+                : "text-gray-500"
             }`}
           >
             <FaList />
@@ -120,7 +148,13 @@ const Products = () => {
           <button
             onClick={() => setViewType("grid")}
             className={`p-2 rounded ${
-              viewType === "grid" ? "bg-gray-200 text-black" : "text-gray-500"
+              viewType === "grid"
+                ? theme === "dark"
+                  ? "bg-white text-black"
+                  : "bg-gray-200 text-black"
+                : theme === "dark"
+                ? "bg-[#1B211A] text-white/80 border border-white/20"
+                : "text-gray-500"
             }`}
           >
             <FaThLarge />
@@ -128,6 +162,7 @@ const Products = () => {
         </div>
       </div>
 
+      {/* CONTENT */}
       {activeTab === "products" &&
         (viewType === "list" ? (
           <ProductTable products={filteredProducts} />
@@ -142,6 +177,7 @@ const Products = () => {
           <CartsGrid carts={filteredCarts} />
         ))}
 
+      {/* FILTER POPUP */}
       <FilterPop
         show={showFilter}
         onClose={() => setShowFilter(false)}
