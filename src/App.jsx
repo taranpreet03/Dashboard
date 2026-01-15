@@ -15,18 +15,19 @@ function App() {
 
   return (
     <div
-      className={`flex h-screen overflow-hidden ${
+      className={`flex h-screen w-screen overflow-hidden ${
         theme === "dark"
           ? "bg-[#1B211A] text-white"
-          : "bg-white text-[#3A4752]"
+          : "bg-[#E7ECFF] text-[#3A4752]"
       }`}
     >
       <Sidebar />
 
-      <div className="ml-12 w-full px-6 flex flex-col overflow-hidden">
+      <div className="ml-12 flex flex-col flex-1 overflow-hidden">
         <Navbar />
 
-        <main className="ml-10 w-full p-6 flex-1 overflow-hidden">
+    
+        <main className="flex-1 w-full p-2 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductPage />} />

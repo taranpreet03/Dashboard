@@ -13,11 +13,10 @@ import { FaList, FaThLarge } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
+
 
 const Products = () => {
   const { theme } = useTheme();
-
   const [products, setProducts] = useState([]);
   const [carts, setCarts] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -32,6 +31,8 @@ const Products = () => {
     cartId: [],
     quantity: 0,
   });
+
+const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
@@ -68,74 +69,78 @@ const Products = () => {
 
   return (
     <div
-      className={`h-screen overflow-hidden mr-5 ${
+      className={`h-screen overflow-hidden ml-9  rounded  ${
         theme === "dark" ? "bg-[#1B211A] text-white" : "bg-white text-[#3A4752]"
       }`}
     >
       {/* TOP BAR */}
       <div
-        className={`flex items-center gap-3 mb-4 p-4 rounded-md border ${
+        className={`flex items-center gap-3  mt-1 mb-4 p-2    ${
           theme === "dark"
             ? "bg-[#1B211A] border-white/20"
             : "bg-white border-[#F2F4F7]"
         }`}
       >
         {/* Filter */}
-        <div
-          className="flex items-center justify-center w-10 h-10 cursor-pointer"
-          onClick={() => setShowFilter(true)}
-        >
-          <img src={filterIcon} alt="Filter Icon" className="w-5 h-5" />
-        </div>
+       <div
+  onClick={() => setShowFilter(true)}
+  className={`p-2 rounded ml-1 cursor-pointer flex border border-gray-300 bg-gray-100 items-center justify-center ${
+    showFilter
+      ? theme === "dark"
+        ? "bg-white text-black"
+        : "bg-gray-200 text-black"
+      : theme === "dark"
+      ? "bg-[#1B211A] text-white/80 border border-white/20"
+      : "text-gray-800"
+  }`}
+>
+  <img src={filterIcon} alt="Filter Icon" className="w-4 h-4" />
+</div>
+
 
         {/* Search */}
-        <SearchInput
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder={
-            activeTab === "products"
-              ? "Search by product..."
-              : "Search by cart..."
-          }
-          className={`w-80 ${
-            theme === "dark"
-              ? "bg-[#1B211A] text-white/80 border border-white/20 placeholder-white/50"
-              : "bg-white text-[#3A4752] border border-gray-300 placeholder-gray-400"
-          }`}
-        />
+    <SearchInput
+  value={searchText}
+  onChange={(e) => setSearchText(e.target.value)}
+  placeholder={
+    activeTab === "products"
+      ? "Search by product..."
+      : "Search by cart..."
+  }
+  className={`w-80 h-10 px-2 rounded-lg text-sm ${
+    theme === "dark"
+      ? "bg-[#1B211A] text-white/80 border border-white/10 placeholder-white/40"
+      : "bg-white text-[#3A4752] border border-[#E5E7EB] placeholder-gray-400"
+  }`}
+/>
 
-        {/* Tabs */}
-        <Button
-          text="Products"
-          onClick={() => {
-            //setActiveTab("products");
-            navigate("/products");
-          }}
-          className={
-            activeTab === "products"
-              ? "bg-[#0B1843] text-white"
-              : theme === "dark"
-              ? "bg-[#1B211A] text-white border border-white/50"
-              : "bg-white text-[#3A4752]"
-          }
-        />
-        <Button
-          text="Carts"
-          onClick={() => {
-            //setActiveTab("carts");
-            navigate("/carts");
-          }}
-          className={
-            activeTab === "carts"
-              ? "bg-[#0B1843] text-white"
-              : theme === "dark"
-              ? "bg-[#1B211A] text-white border border-white/20"
-              : "bg-white text-[#3A4752]"
-          }
-        />
+
+
+        {/* Tabs dropdown */}
+        
+<select
+  value={activeTab}
+  onChange={(e) => {
+    const value = e.target.value;
+    setActiveTab(value);
+    navigate(`/${value}`);
+  }}
+  className={`ml-210 mr-2 pl-2 pr-8 py-1 rounded text-sm cursor-pointer outline-none ${
+    theme === "dark"
+      ? "bg-[#1B211A] text-white border border-white/10"
+      : "bg-white text-[#3A4752] border border-gray-200"
+  }`}
+>
+  <option value="products">Products</option>
+  <option value="carts">Carts</option>
+  <option value="posts">Posts</option>
+  <option value="album">Albums</option>
+</select>
+
+
 
         {/* View Toggle */}
-        <div className="flex gap-1 ml-auto rounded-md p-1">
+        <div className="flex  gap-2 ml-auto  rounded-md p-1">
           <button
             onClick={() => setViewType("list")}
             className={`p-2 rounded ${

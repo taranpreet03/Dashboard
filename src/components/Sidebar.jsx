@@ -18,7 +18,7 @@ const Sidebar = () => {
   className={`group fixed top-0 left-0 h-screen w-20 hover:w-60 transition-all duration-300 flex flex-col
     ${
       theme === "dark"
-        ? "bg-gray-800"
+        ? "bg-gray-700"
         : "bg-[#0B1843]"
     }
   `}

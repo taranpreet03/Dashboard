@@ -17,23 +17,23 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
 
   return (
     <div
-      className={`border ${
+      className={`border rounded-lg overflow-hidden max-w-[98%] mx-auto ${
         theme === "dark"
           ? "bg-[#1B211A] text-white border-white/20"
           : "bg-white text-[#3A4752] border-gray-200"
       }`}
     >
-      {/* TABLE HEADER */}
-      <table className="w-full border-collapse table-fixed">
+      {/* =header */}
+      <table className="w-full border-collapse text-xs table-fixed">
         <thead className={theme === "dark" ? "bg-[#1B211A]" : "bg-[#DCE4FF]"}>
           <tr>
             {columns.map((col, index) => (
               <th
                 key={index}
-                className={`px-3 py-2 text-left font-normal border-b ${
+                className={`px-2 py-1.5 text-left font-normal border-r last:border-r-0 ${
                   theme === "dark"
-                    ? "border-white/20 text-white/80"
-                    : "border-[#F2F4F7]"
+                    ? "border-white/10 text-white/80"
+                    : "border-[#EEF2F7] text-[#4B5563]"
                 }`}
               >
                 {col.header}
@@ -43,33 +43,33 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
         </thead>
       </table>
 
-      {/* TABLE BODY */}
-      <div className="max-h-[80vh] overflow-y-auto">
-        <table className="w-full border-collapse table-fixed">
+      {/*Body */}
+      <div className="max-h-[70vh] overflow-y-auto">
+        <table className="w-full border-collapse text-xs table-fixed">
           <tbody>
             {data.map((row, rowIndex) => (
               <tr
                 key={row._id || rowIndex}
-                className={
-                  theme === "dark" ? "hover:bg-white/5" : "hover:bg-gray-50"
-                }
+                className={`transition ${
+                  theme === "dark"
+                    ? "hover:bg-white/5"
+                    : "hover:bg-gray-50"
+                }`}
               >
                 {columns.map((col, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`px-3 py-2 border ${
+                    className={`px-2 py-1.5 border-t border-r last:border-r-0 ${
                       theme === "dark"
-                        ? "border-white/20 text-white/80"
-                        : "border-[#F2F4F7]"
+                        ? "border-white/10 text-white/80"
+                        : "border-[#F1F5F9] text-[#374151]"
                     } ${
-                      col.header === "Action"
-                        ? theme === "dark"
-                          ? "bg-[#1B211A]"
-                          : "bg-white"
-                        : ""
+                      col.header === "Action" ? "text-center" : ""
                     }`}
                   >
-                    {col.render ? col.render(row, rowIndex) : row[col.accessor]}
+                    {col.render
+                      ? col.render(row, rowIndex)
+                      : row[col.accessor]}
                   </td>
                 ))}
               </tr>
