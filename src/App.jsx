@@ -14,20 +14,21 @@ function App() {
   const { theme } = useTheme();
 
   return (
-    <div
-      className={`flex h-screen w-screen overflow-hidden ${
-        theme === "dark"
-          ? "bg-[#1B211A] text-white"
-          : "bg-[#E7ECFF] text-[#3A4752]"
-      }`}
-    >
+  <div
+  className={`flex h-screen w-screen overflow-hidden ${
+    theme === "dark"
+      ? "bg-gradient-to-br from-[#0B1626] to-[#1E3557] text-white"
+      : "bg-[#E7ECFF] text-[#3A4752]"
+  }`}
+>
+
       <Sidebar />
 
       <div className="ml-12 flex flex-col flex-1 overflow-hidden">
         <Navbar />
 
     
-        <main className="flex-1 w-full p-2 overflow-hidden">
+        <main className="flex-1 w-full p-2 overflow-hidden mb-2">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductPage />} />

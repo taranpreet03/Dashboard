@@ -7,7 +7,7 @@ const PostsTable = () => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 11;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(posts.length / itemsPerPage);
   const paginatedPosts = posts.slice(startIndex, startIndex + itemsPerPage);
@@ -32,7 +32,7 @@ const PostsTable = () => {
   ];
 
   return (
-    <>
+    <div className="ml-10 mt-5">
 
       <Table columns={columns} data={paginatedPosts} />
 
@@ -41,7 +41,7 @@ const PostsTable = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
-    </>
+    </div>
   );
 };
 

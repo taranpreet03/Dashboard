@@ -17,7 +17,7 @@ const Navbar = () => {
     <nav
       className={`w-full px-6 py-3 border-b ${
         theme === "dark"
-          ? "bg-[#1B211A] text-white border-white/20"
+          ? "bg-gradient-to-br from-[#0B1626] to-[#1E3557]  text-white border-white/20"
           : "bg-white text-[#3A4752] border-[#F2F4F7]"
       }`}
     >
@@ -39,11 +39,16 @@ const Navbar = () => {
 
           {/* THEME TOGGLE */}
           <button
-            onClick={toggleTheme}
-            className="p-2  rounded-full hover:bg-black/10 dark:hover:bg-white/10"
-          >
-            {theme === "dark" ? <FaSun /> : <FaMoon />}
-          </button>
+  onClick={toggleTheme}
+  className={`p-2 rounded-full transition ${
+    theme === "dark"
+      ? "bg-white text-black hover:bg-gray-200"
+      : "text-gray-800 hover:bg-black/10"
+  }`}
+>
+  {theme === "dark" ? <FaSun /> : <FaMoon />}
+</button>
+
 
           {/* NOTIFICATION */}
           <img src={Bell} alt="Notification" className="h-6 w-6 " />

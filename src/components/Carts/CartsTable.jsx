@@ -23,7 +23,7 @@ const CartsTable = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(cartList.length / itemsPerPage);
 
@@ -112,7 +112,7 @@ const CartsTable = () => {
   ];
 
   return (
-    <>
+    <div className="ml-10 mt-5">
       <Table columns={columns} data={paginatedCarts} />
 
       <Pagination
@@ -135,7 +135,7 @@ const CartsTable = () => {
           onSave={handleSaveCart}
         />
       )}
-    </>
+    </div>
   );
 };
 

@@ -69,15 +69,15 @@ const navigate = useNavigate();
 
   return (
     <div
-      className={`h-screen overflow-hidden ml-9  rounded  ${
-        theme === "dark" ? "bg-[#1B211A] text-white" : "bg-white text-[#3A4752]"
+      className={`h-screen overflow-hidden ml-9   rounded  ${
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
       }`}
     >
       {/* TOP BAR */}
       <div
         className={`flex items-center gap-3  mt-1 mb-4 p-2    ${
           theme === "dark"
-            ? "bg-[#1B211A] border-white/20"
+            ? "bg-gray-800 border-white/20"
             : "bg-white border-[#F2F4F7]"
         }`}
       >
@@ -90,7 +90,7 @@ const navigate = useNavigate();
         ? "bg-white text-black"
         : "bg-gray-200 text-black"
       : theme === "dark"
-      ? "bg-[#1B211A] text-white/80 border border-white/20"
+      ? "bg-gray-800 text-white/80 border border-white/20"
       : "text-gray-800"
   }`}
 >
@@ -109,7 +109,7 @@ const navigate = useNavigate();
   }
   className={`w-80 h-10 px-2 rounded-lg text-sm ${
     theme === "dark"
-      ? "bg-[#1B211A] text-white/80 border border-white/10 placeholder-white/40"
+      ? "bg-gray-800 text-white/80 border border-white/10 placeholder-white/40"
       : "bg-white text-[#3A4752] border border-[#E5E7EB] placeholder-gray-400"
   }`}
 />
@@ -127,7 +127,7 @@ const navigate = useNavigate();
   }}
   className={`ml-210 mr-2 pl-2 pr-8 py-1 rounded text-sm cursor-pointer outline-none ${
     theme === "dark"
-      ? "bg-[#1B211A] text-white border border-white/10"
+      ? "bg-gray-800 text-white border border-white/10"
       : "bg-white text-[#3A4752] border border-gray-200"
   }`}
 >

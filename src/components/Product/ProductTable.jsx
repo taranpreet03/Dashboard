@@ -23,7 +23,7 @@ const ProductTable = () => {
 
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 13;
+  const itemsPerPage = 12;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(productList.length / itemsPerPage);
 
@@ -87,7 +87,7 @@ const ProductTable = () => {
         const rowId = row._id;
 
         return (
-          <div className="relative flex justify-center items-center">
+          <div className="relative flex justify-center items-center  ">
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
@@ -127,7 +127,7 @@ const ProductTable = () => {
   ];
 
   return (
-    <>
+    <div className=" mt-5">
       <Table columns={columns} data={paginatedProducts} />
 
       {/* PAGINATION */}
@@ -151,7 +151,7 @@ const ProductTable = () => {
           onSave={handleSaveProduct}
         />
       )}
-    </>
+    </div>
   );
 };
 

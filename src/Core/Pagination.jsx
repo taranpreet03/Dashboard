@@ -6,17 +6,19 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
   const baseBtn =
-    "px-3 h-[26px] rounded-[4px] text-xs disabled:opacity-50 border";
+    "px-3 h-[26px] rounded-[4px] text-xs disabled:opacity-50 border transition";
 
-  const lightBtn = "bg-blue-600 text-[#3A4752] border-[#F2F4F7]";
-  const darkBtn = "bg-[#1B211A] text-white border-white/30";
+  const lightBtn = "bg-white text-[#3A4752] border-[#E5E7EB]";
+    const darkBtn = "bg-[#1B211A] text-white border-white/30";
 
-  const activeBtn = "bg-blue-800 text-black border-transparent";
+  const activeBtn =
+    theme === "dark"
+      ? "bg-white text-black border-transparent"
+      : "bg-blue-800 text-black border-transparent ";
 
   return (
-    <div className="flex justify-end mt-2">
-   
-      <div className=" flexd items-center gap-2 ml-auto w-[220px] h-[30px]">
+    <div className="fixed bottom-6 right-6 z-50">
+      <div className="flex items-center gap-2">
         {/* PREV */}
         <button
           disabled={currentPage === 1}

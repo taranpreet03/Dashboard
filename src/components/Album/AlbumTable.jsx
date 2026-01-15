@@ -7,7 +7,7 @@ const AlbumsTable = () => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(albums.length / itemsPerPage);
   const paginatedAlbums = albums.slice(startIndex, startIndex + itemsPerPage);
@@ -26,7 +26,7 @@ const AlbumsTable = () => {
   ];
 
   return (
-    <>
+    <div className="ml-10 mt-5">
       <Table columns={columns} data={paginatedAlbums} />
 
       <Pagination
@@ -34,7 +34,7 @@ const AlbumsTable = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
-    </>
+    </div>
   );
 };
 
