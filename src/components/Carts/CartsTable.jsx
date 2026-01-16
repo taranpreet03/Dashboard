@@ -5,14 +5,17 @@ import CartsDetailModal from "./CartsDetailModal";
 import EditCartModal from "./EditCartModal";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { fetchCarts } from "../../services/CartsApi";
+import { useTheme } from "../../context/ThemeContext";
 
 const CartsTable = () => {
+  const { theme } = useTheme();
+
   const [cartList, setCartList] = useState([]);
-  const [selectedCart, setSelectedCart] = useState(null);
+  const [viewCart, setViewCart] = useState(null);
   const [editCart, setEditCart] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
 
-  // Fetch carts
+  /* ================= FETCH ================= */
   useEffect(() => {
     const getCarts = async () => {
       const data = await fetchCarts();
@@ -21,7 +24,7 @@ const CartsTable = () => {
     getCarts();
   }, []);
 
-  // Pagination
+  /* ================= PAGINATION ================= */
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -32,7 +35,7 @@ const CartsTable = () => {
     startIndex + itemsPerPage
   );
 
-  // Save cart
+  /* ================= SAVE ================= */
   const handleSaveCart = (updatedCart) => {
     setCartList((prev) =>
       prev.map((cart) =>
@@ -41,6 +44,7 @@ const CartsTable = () => {
     );
   };
 
+  /* ================= COLUMNS ================= */
   const columns = [
     {
       header: "#",
@@ -60,11 +64,11 @@ const CartsTable = () => {
     },
     {
       header: "Total ($)",
-      accessor: "total",
+      render: (row) => `$${row.total}`,
     },
     {
       header: "Discounted ($)",
-      accessor: "discountedTotal",
+      render: (row) => `$${row.discountedTotal}`,
     },
     {
       header: "Action",
@@ -72,21 +76,21 @@ const CartsTable = () => {
         const rowId = row.id;
 
         return (
-          <div className="relative flex justify-center">
+          <div className="relative flex justify-center items-center">
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
               }
               className="bg-transparent p-0 border-none outline-none"
             >
-              <FiMoreHorizontal size={18} />
+              <FiMoreHorizontal size={16} />
             </button>
 
             {activeRowId === rowId && (
-              <div className="absolute top-8 right-0 w-44 bg-white rounded-lg shadow-md p-2 z-20">
+              <div className="absolute top-6 right-0 w-44 bg-white rounded-md shadow-md p-2 z-20">
                 <button
                   onClick={() => {
-                    setSelectedCart(row);
+                    setViewCart(row);
                     setActiveRowId(null);
                   }}
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-[#DCE4FF]"
@@ -111,23 +115,33 @@ const CartsTable = () => {
     },
   ];
 
+  /* ================= RENDER ================= */
   return (
-    <div className="ml-10 mt-5">
+    <div
+      className={`h-screen rounded overflow-hidden ${
+        theme === "dark"
+          ? "bg-gray-800 text-white"
+          : "bg-white text-[#3A4752]"
+      }`}
+    >
       <Table columns={columns} data={paginatedCarts} />
 
+      {/* PAGINATION */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
 
-      {selectedCart && (
+      {/* VIEW CART */}
+      {viewCart && (
         <CartsDetailModal
-          cart={selectedCart}
-          onClose={() => setSelectedCart(null)}
+          cart={viewCart}
+          onClose={() => setViewCart(null)}
         />
       )}
 
+      {/* EDIT CART */}
       {editCart && (
         <EditCartModal
           cart={editCart}

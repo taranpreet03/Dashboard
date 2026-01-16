@@ -14,7 +14,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const activeBtn =
     theme === "dark"
       ? "bg-white text-black border-transparent"
-      : "bg-blue-800 text-black border-transparent ";
+      : "bg-gray-200 text-black border-transparent ";
 
   return (
     <div className="fixed bottom-6 right-6 z-50">

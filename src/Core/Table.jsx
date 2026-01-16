@@ -17,7 +17,7 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
 
   return (
     <div
-      className={`border rounded-lg overflow-hidden max-w-[98%] mx-auto ${
+      className={`border rounded-lg overflow-hidden mb-2 max-w-[98%] mx-auto ${
         theme === "dark"
           ? "bg-gray-800 text-white border-white/20"
           : "bg-white text-[#3A4752] border-gray-200"

@@ -5,8 +5,11 @@ import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { fetchProducts } from "../../services/productApi";
+import { useTheme } from "../../context/ThemeContext";
 
 const ProductTable = () => {
+  const { theme } = useTheme();
+
   const [productList, setProductList] = useState([]);
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
@@ -41,7 +44,7 @@ const ProductTable = () => {
     );
   };
 
-  // CATEGORY 
+  // CATEGORY
   const renderCategoryBadge = (category) => {
     const value = category?.toLowerCase();
 
@@ -65,29 +68,22 @@ const ProductTable = () => {
   // COLUMNS
   const columns = [
     { header: "#", render: (_, i) => startIndex + i + 1 },
-
     { header: "Title", accessor: "title" },
-
     { header: "Size", render: (row) => row.size?.join(", ") },
-
     {
       header: "Category",
       render: (row) => renderCategoryBadge(row.category),
     },
-
     { header: "Price", render: (row) => `₹${row.price}` },
-
     { header: "Stock", accessor: "stock" },
-
     { header: "Brand", accessor: "brand" },
-
     {
       header: "Action",
       render: (row) => {
         const rowId = row._id;
 
         return (
-          <div className="relative flex justify-center items-center  ">
+          <div className="relative flex justify-center items-center">
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
@@ -127,15 +123,23 @@ const ProductTable = () => {
   ];
 
   return (
-    <div className=" mt-5">
-      <Table columns={columns} data={paginatedProducts} />
+    <div
+      className={`h-screen  rounded overflow-hidden ${
+        theme === "dark"
+          ? "bg-gray-800 text-white"
+          : "bg-white text-[#3A4752]"
+      }`}
+    >
+      <div className="">
+        <Table columns={columns} data={paginatedProducts} />
 
-      {/* PAGINATION */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+        {/* PAGINATION */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
 
       {viewProduct && (
         <ProductDetailsModal

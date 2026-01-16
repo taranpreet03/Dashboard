@@ -3,12 +3,13 @@ import "./App.css";
 
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import Home from "./components/Home/Home";
-import ProductPage from "./components/Product/ProductTable";
+import Layout from "./components/Product/Layout";
+import CartLayout from "./components/Carts/CartLayout";
 import CartPage from "./components/Carts/CartsTable";
 import PostPage from "./components/Post/PostTable";
 import AlbumPage from "./components/Album/AlbumTable";
 import { useTheme } from "./context/ThemeContext";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const { theme } = useTheme();
@@ -24,15 +25,15 @@ function App() {
 
       <Sidebar />
 
-      <div className="ml-12 flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden" style={{marginLeft: "80px"}}>
         <Navbar />
 
     
         <main className="flex-1 w-full p-2 overflow-hidden mb-2">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<ProductPage />} />
-            <Route path="/carts" element={<CartPage />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/products" element={<Layout />} />
+            <Route path="/carts" element={<CartLayout />} />
             <Route path="/posts" element={<PostPage />} />
             <Route path="/album" element={<AlbumPage />} />
           </Routes>

@@ -3,13 +3,13 @@ import { FiEdit } from "react-icons/fi";
 const ProductGrid = ({ products = [], onEdit }) => {
   return (
     <div className="overflow-y-auto h-screen">
-    <div className="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2  ">
+    <div className="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2   ">
       {products.map((product) => (
         <div
           key={product._id}
-          className="bg-white bordEFR border-gray-200 rounded-md p-3 h-[150px] w-[300px]
+          className=" ml-5 bg-white border border-gray-200 rounded-md p-3 h-[150px] w-[300px]
             flex flex-col hover:shadow-sm transition  ">
-          <div className="flex justify-between items-start gap-2">
+          <div className="flex justify-between items-start gap-2 ">
             <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
               {product.title}
             </h3>

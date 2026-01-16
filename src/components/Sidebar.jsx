@@ -16,12 +16,12 @@ const Sidebar = () => {
   return (
     <aside
   className={`group fixed top-0 left-0 h-screen w-20 hover:w-60 transition-all duration-300 flex flex-col
-    ${
-      theme === "dark"
-        ? "bg-gray-800"
-        : "bg-[#0B1843]"
-    }
-  `}
+  ${
+    theme === "dark"
+      ? "bg-gradient-to-b from-[#10225F] via-[#172E7A] to-[#0B1843]"
+      : "bg-[#0B1843]"
+  }
+`}
 >
 
       {/* LOGO */}
@@ -46,6 +46,13 @@ const Sidebar = () => {
           <span className="hidden group-hover:inline text-white">Products</span>
         </NavLink>
 
+  <NavLink
+          to="/carts"
+          className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10 cursor-pointer"
+        >
+          <FaShoppingCart className="text-white text-xl" />
+          <span className="hidden group-hover:inline text-white">Cart</span>
+        </NavLink>
         <NavLink
           to="/posts"
           className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10 cursor-pointer"
@@ -62,13 +69,7 @@ const Sidebar = () => {
           <span className="hidden group-hover:inline text-white">Albums</span>
         </NavLink>
 
-        <NavLink
-          to="/carts"
-          className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10 cursor-pointer"
-        >
-          <FaShoppingCart className="text-white text-xl" />
-          <span className="hidden group-hover:inline text-white">Cart</span>
-        </NavLink>
+        
       </nav>
     </aside>
   );
