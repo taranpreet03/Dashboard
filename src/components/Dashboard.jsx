@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaList, FaThLarge } from "react-icons/fa";
 import filterIcon from "../assets/Images/Vector.svg";
 import FilterPop from "../components/Filterpopup";
@@ -6,6 +6,8 @@ import SearchInput from "../Core/Search";
 import ProductsPage from "./Product/Productpage";
 import CartsPage from "./Carts/Cartpage";
 import { useTheme } from "../context/ThemeContext";
+import { fetchProducts } from "../services/productApi";
+import { fetchCarts } from "../services/CartsApi";
 
 const Dashboard = () => {
   const { theme } = useTheme();
@@ -15,6 +17,9 @@ const Dashboard = () => {
   const [viewType, setViewType] = useState("list");
   const [showFilter, setShowFilter] = useState(false);
 
+  const [products, setProducts] = useState([]);
+  const [carts, setCarts] = useState([]);
+
   const [filters, setFilters] = useState({
     brand: [],
     size: [],
@@ -22,6 +27,15 @@ const Dashboard = () => {
     cartId: [],
     quantity: 0,
   });
+
+  // fetch once
+  useEffect(() => {
+    fetchProducts().then(setProducts);
+    fetchCarts().then(setCarts);
+  }, []);
+
+  // derive brands
+  const brands = [...new Set(products.map((p) => p.brand))];
 
   return (
     <div
@@ -32,8 +46,7 @@ const Dashboard = () => {
       }`}
     >
       {/* TOP BAR */}
-      <div className="flex items-center gap-3 p-2 mb-4 ">
-
+      <div className="flex items-center gap-3 p-2 mb-4">
         {/* FILTER */}
         <button
           onClick={() => setShowFilter(true)}
@@ -58,36 +71,28 @@ const Dashboard = () => {
           }`}
         />
 
-        {/* TAB SELECT */}
-      <select
-  value={activeTab}
-  onChange={(e) => setActiveTab(e.target.value)}
-  className={`
-    ml-auto px-6 py-2 rounded-md text-sm
-    bg-gray-50 text-[#3A4752]
-    border border-gray-200
-    outline-none focus:outline-none focus:ring-0
-    hover:bg-gray-100
-  `}
->
-  <option value="products">Products</option>
-  <option value="carts">Carts</option>
-
-</select>
-
+        {/* TAB */}
+        <select
+          value={activeTab}
+          onChange={(e) => setActiveTab(e.target.value)}
+          className="ml-auto px-6 py-2 rounded-md text-sm bg-gray-50 border"
+        >
+          <option value="products">Products</option>
+          <option value="carts">Carts</option>
+        </select>
 
         {/* VIEW TOGGLE */}
         <div className="flex gap-2">
           <button
             onClick={() => setViewType("list")}
-            className={viewType === "list" ? "text-black-600" : ""}
+            className={viewType === "list" ? "text-blue-600" : "text-gray-400"}
           >
             <FaList />
           </button>
 
           <button
             onClick={() => setViewType("grid")}
-            className={viewType === "grid" ? "text-black-600" : ""}
+            className={viewType === "grid" ? "text-blue-600" : "text-gray-400"}
           >
             <FaThLarge />
           </button>
@@ -97,6 +102,7 @@ const Dashboard = () => {
       {/* CONTENT */}
       {activeTab === "products" && (
         <ProductsPage
+          products={products}
           searchText={searchText}
           filters={filters}
           viewType={viewType}
@@ -105,6 +111,7 @@ const Dashboard = () => {
 
       {activeTab === "carts" && (
         <CartsPage
+          carts={carts}
           searchText={searchText}
           filters={filters}
           viewType={viewType}
@@ -117,6 +124,8 @@ const Dashboard = () => {
         onClose={() => setShowFilter(false)}
         filters={filters}
         setFilters={setFilters}
+        brands={brands}
+        carts={carts}
         activeTab={activeTab}
       />
     </div>

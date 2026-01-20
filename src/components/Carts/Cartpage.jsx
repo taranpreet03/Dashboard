@@ -1,21 +1,37 @@
 import { useEffect, useState } from "react";
 import CartsTable from "../Carts/CartsTable";
-import CartsGrid from "../Carts/CartGrid";; 
+import CartsGrid from "../Carts/CartGrid";
 import { fetchCarts } from "../../services/CartsApi";
 
-const CartsPage = ({ searchText, filters, viewType }) => {
-  const [carts, setCarts] = useState([]);
+const CartsPage = ({
+  carts: cartsProp,
+  searchText = "",
+  filters = {
+    cartId: [],
+    quantity: 0,
+  },
+  viewType = "list",
+}) => {
+  const [carts, setCarts] = useState(cartsProp || []);
 
+  // fetch ONLY if carts not provided
   useEffect(() => {
-    fetchCarts().then(setCarts);
-  }, []);
+    if (!cartsProp) {
+      fetchCarts().then(setCarts);
+    }
+  }, [cartsProp]);
 
   const filteredCarts = carts.filter((cart) => {
-    const matchSearch = cart.id.toString().includes(searchText);
+    const matchSearch =
+      !searchText || cart.id.toString().includes(searchText);
+
+    const matchCartId =
+      filters.cartId.length === 0 || filters.cartId.includes(cart.id);
+
     const matchQty =
       filters.quantity === 0 || cart.totalQuantity >= filters.quantity;
 
-    return matchSearch && matchQty;
+    return matchSearch && matchCartId && matchQty;
   });
 
   return viewType === "list" ? (

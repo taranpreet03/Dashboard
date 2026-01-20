@@ -5,7 +5,7 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import Layout from "./components/Product/Layout";
 import CartLayout from "./components/Carts/CartLayout";
-import CartPage from "./components/Carts/CartsTable";
+// import CartPage from "./components/Carts/CartsTable";
 import PostPage from "./components/Post/PostTable";
 import AlbumPage from "./components/Album/AlbumTable";
 import { useTheme } from "./context/ThemeContext";
@@ -17,9 +17,10 @@ function App() {
   return (
   <div
   className={`flex h-screen w-screen overflow-hidden ${
-    theme === "dark"
-      ? "bg-gradient-to-br from-[#0B1626] to-[#1E3557] text-white"
-      : "bg-[#E7ECFF] text-[#3A4752]"
+    theme === "light"
+      ?"bg-[#E7ECFF] text-[#3A4752]" 
+      : "bg-gradient-to-br from-[#0B1626] to-[#1E3557] text-white"
+      
   }`}
 >
 
