@@ -3,7 +3,7 @@ import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
-import { FiMoreHorizontal } from "react-icons/fi";
+import {FiMoreHorizontal,FiChevronDown } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
 const ProductTable = ({ products }) => {
@@ -13,18 +13,99 @@ const ProductTable = ({ products }) => {
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
 
-  /*  PAGINATION  */
+  /* SORT */
+  const [sort, setSort] = useState({
+    key: null,
+    direction: "asc",
+  });
+
+  const [openSortKey, setOpenSortKey] = useState(null);
+
+  const applySort = (key, direction) => {
+    setSort({ key, direction });
+    setOpenSortKey(null);
+    setCurrentPage(1);
+  };
+
+  /* PAGINATION */
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
-  const paginatedProducts = products.slice(
+  /* SORT DATA */
+  const sortedProducts = [...products].sort((x, y) => {
+    if (!sort.key) return 0;
+
+    let xValue = x[sort.key];
+    let yValue = y[sort.key];
+
+    if (typeof xValue === "string") {
+      xValue = xValue.toLowerCase();
+      yValue = yValue.toLowerCase();
+    }
+
+    if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
+    if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const paginatedProducts = sortedProducts.slice(
     startIndex,
     startIndex + itemsPerPage
   );
 
-  /* CATEGORY  */
+  /* SORT DROPDOWN */
+  const SortDropdown = ({ sortKey, type }) => (
+    <div className="relative ml-auto ">
+
+      <button
+        onClick={() =>
+          setOpenSortKey(openSortKey === sortKey ? null : sortKey)
+        }
+      >
+        <FiChevronDown size={14} />
+      </button>
+
+      {openSortKey === sortKey && (
+        <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF] ">
+          {type === "string" ? (
+            <>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                onClick={() => applySort(sortKey, "asc")}
+              >
+                A → Z
+              </button>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                onClick={() => applySort(sortKey, "desc")}
+              >
+                Z → A
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                onClick={() => applySort(sortKey, "asc")}
+              >
+                Low → High
+              </button>
+              <button
+                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                onClick={() => applySort(sortKey, "desc")}
+              >
+                High → Low
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  /* CATEGORY BADGE */
   const renderCategoryBadge = (category) => {
     const styles = {
       men: "text-blue-600 border-blue-300 bg-blue-50",
@@ -43,18 +124,46 @@ const ProductTable = ({ products }) => {
     );
   };
 
-  /*  COLUMNS */
+  /* COLUMNS */
   const columns = [
     { header: "#", render: (_, i) => startIndex + i + 1 },
-    { header: "Title", accessor: "title" },
+
+    {
+      header: (
+        <div className="flex items-center gap-1">
+          Title <SortDropdown sortKey="title" type="string" />
+        </div>
+      ),
+      accessor: "title",
+    },
+
     { header: "Size", render: (row) => row.size?.join(", ") },
+
     {
       header: "Category",
       render: (row) => renderCategoryBadge(row.category),
     },
-    { header: "Price", render: (row) => `₹${row.price}` },
-    { header: "Stock", accessor: "stock" },
+
+    {
+      header: (
+        <div className="flex items-center gap-1">
+          Price <SortDropdown sortKey="price" type="number" />
+        </div>
+      ),
+      render: (row) => `₹${row.price}`,
+    },
+
+    {
+      header: (
+        <div className="flex items-center gap-1">
+          Stock <SortDropdown sortKey="stock" type="number" />
+        </div>
+      ),
+      accessor: "stock",
+    },
+
     { header: "Brand", accessor: "brand" },
+
     {
       header: "Action",
       render: (row) => {
