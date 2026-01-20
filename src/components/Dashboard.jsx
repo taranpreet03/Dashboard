@@ -89,7 +89,7 @@ const Dashboard = () => {
         theme === "dark"
           ? "bg-gray-800 border-white/20"
           : "bg-gray-100 border-gray-300"
-      } ${
+      } ${      
         viewType === "list"
           ? "text-blue-600"
           : "text-gray-400"

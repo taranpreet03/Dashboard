@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
-import {FiMoreHorizontal,FiChevronDown } from "react-icons/fi";
+import { FiMoreHorizontal, FiChevronDown } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
 const ProductTable = ({ products }) => {
@@ -13,7 +13,7 @@ const ProductTable = ({ products }) => {
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
 
-  /* SORT */
+  /* SORT STATE */
   const [sort, setSort] = useState({
     key: null,
     direction: "asc",
@@ -37,18 +37,18 @@ const ProductTable = ({ products }) => {
   const sortedProducts = [...products].sort((x, y) => {
     if (!sort.key) return 0;
 
-    let xValue = x[sort.key];
-    let yValue = y[sort.key];
+      let xValue = x[sort.key];
+      let yValue = y[sort.key];
 
-    if (typeof xValue === "string") {
-      xValue = xValue.toLowerCase();
-      yValue = yValue.toLowerCase();
-    }
+      if (typeof xValue === "string") {
+        xValue = xValue.toLowerCase();
+        yValue = yValue.toLowerCase();
+      }
 
-    if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
-    if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
-    return 0;
-  });
+      if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
+      if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
+      return 0;
+    });
 
   const paginatedProducts = sortedProducts.slice(
     startIndex,
@@ -59,50 +59,50 @@ const ProductTable = ({ products }) => {
   const SortDropdown = ({ sortKey, type }) => (
     <div className="relative ml-auto ">
 
-      <button
-        onClick={() =>
-          setOpenSortKey(openSortKey === sortKey ? null : sortKey)
-        }
-      >
+        <button
+          onClick={() =>
+            setOpenSortKey(openSortKey === sortKey ? null : sortKey)
+          }
+        >
         <FiChevronDown size={14} />
-      </button>
+        </button>
 
-      {openSortKey === sortKey && (
-        <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF] ">
-          {type === "string" ? (
-            <>
-              <button
-                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
-                onClick={() => applySort(sortKey, "asc")}
-              >
-                A → Z
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
-                onClick={() => applySort(sortKey, "desc")}
-              >
-                Z → A
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
-                onClick={() => applySort(sortKey, "asc")}
-              >
-                Low → High
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
-                onClick={() => applySort(sortKey, "desc")}
-              >
-                High → Low
-              </button>
-            </>
-          )}
-        </div>
-      )}
-    </div>
+        {openSortKey === sortKey && (
+          <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF]">
+            {type === "string" ? (
+              <>
+                <button
+                  className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                  onClick={() => applySort(sortKey, "asc")}
+                >
+                  A → Z
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                  onClick={() => applySort(sortKey, "desc")}
+                >
+                  Z → A
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                  onClick={() => applySort(sortKey, "asc")}
+                >
+                  Low → High
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                  onClick={() => applySort(sortKey, "desc")}
+                >
+                  High → Low
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
   );
 
   /* CATEGORY BADGE */
@@ -168,7 +168,6 @@ const ProductTable = ({ products }) => {
       header: "Action",
       render: (row) => {
         const rowId = row._id;
-
         return (
           <div className="relative flex justify-center">
             <button
@@ -210,9 +209,7 @@ const ProductTable = ({ products }) => {
   return (
     <div
       className={`h-screen rounded overflow-hidden ${
-        theme === "dark"
-          ? "bg-gray-800 text-white"
-          : "bg-white text-[#3A4752]"
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
       }`}
     >
       <Table columns={columns} data={paginatedProducts} />

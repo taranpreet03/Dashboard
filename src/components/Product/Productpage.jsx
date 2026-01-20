@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import ProductTable from "../Product/ProductTable";
 import ProductGrid from "../Product/ProductGrid";
-import { fetchProducts } from "../../services/productApi";
 
 const ProductsPage = ({
-  products: productsProp,
+  products = [],
   searchText = "",
   filters = {
     brand: [],
@@ -13,15 +12,6 @@ const ProductsPage = ({
   },
   viewType = "list",
 }) => {
-  const [products, setProducts] = useState(productsProp || []);
-
-  // fetch ONLY if products not provided
-  useEffect(() => {
-    if (!productsProp) {
-      fetchProducts().then(setProducts);
-    }
-  }, [productsProp]);
-
   const filteredProducts = products.filter((item) => {
     const matchSearch =
       !searchText ||
@@ -46,3 +36,4 @@ const ProductsPage = ({
 };
 
 export default ProductsPage;
+
