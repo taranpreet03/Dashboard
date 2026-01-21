@@ -15,7 +15,7 @@ const CartsTable = ({ carts }) => {
 
   /*  PAGINATION  */
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 12;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(carts.length / itemsPerPage);
 
@@ -51,7 +51,7 @@ const CartsTable = ({ carts }) => {
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
-              }
+              } className="bg-transparent"
             >
               <FiMoreHorizontal size={16} />
             </button>

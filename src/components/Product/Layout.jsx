@@ -26,24 +26,31 @@ const Layout = () => {
   });
 
   useEffect(() => {
-    fetchProducts().then(setProducts);
-  }, []);
+    // fetchProducts().then(setProducts);
+    const timer=setTimeout(()=>{
+      fetchProducts(searchText).then(setProducts);
+    },500);
+    return()=>clearTimeout(timer);
+  }, [searchText]);
 
+const filteredProducts = useMemo(() => {
+  return products.filter(product => product.price <= filters.price);
+}, [products, filters.price]);
 
 
   /* Memo filter */
-  const filteredProducts = useMemo(() => {
+  // const filteredProducts = useMemo(() => {
 
-    return products.filter((product) => {
-      const matchesSearch = product.title
-        ?.toLowerCase()
-        .includes(searchText.toLowerCase());
+  //   return products.filter((product) => {
+  //     const matchesSearch = product.title
+  //       ?.toLowerCase()
+  //       .includes(searchText.toLowerCase());
 
-      const matchesPrice = product.price <= filters.price;
+  //     const matchesPrice = product.price <= filters.price;
 
-      return matchesSearch && matchesPrice;
-    });
-  }, [products, searchText, filters.price]);
+  //     return matchesSearch && matchesPrice;
+  //   });
+  // }, [products, searchText, filters.price]);
 
   return (
     <div

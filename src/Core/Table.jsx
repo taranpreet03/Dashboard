@@ -23,16 +23,22 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
           : "bg-white text-[#3A4752] border-gray-200"
       }`}
     >
-      {/* header */}
-      <table className="w-full border-collapse text-xs table-fixed">
-        <thead className={theme === "dark" ? "bg-gradient-to-br from-[#0B1626] to-[#1E3557] " : "bg-[#DCE4FF]"}>
+      {/* HEADER */}
+      <table className="w-full border-collapse text-sm table-fixed">
+        <thead
+          className={
+            theme === "dark"
+              ? "bg-gradient-to-br from-[#0B1626] to-[#1E3557]"
+              : "bg-[#DCE4FF]"
+          }
+        >
           <tr>
             {columns.map((col, index) => (
               <th
                 key={index}
-                className={`px-2 py-1.5 text-left font-normal border-r last:border-r-0 ${
+                className={`px-5 py-2 text-left font-normal  ${
                   theme === "dark"
-                    ? " bg-gray-800 border-white/10 text-white/80"
+                    ? "bg-gray-800 border-white/10 text-white/80"
                     : "border-[#EEF2F7] text-[#4B5563]"
                 }`}
               >
@@ -43,9 +49,9 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
         </thead>
       </table>
 
-      {/*Body */}
+      {/* BODY */}
       <div className="max-h-[70vh] overflow-y-auto">
-        <table className="w-full border-collapse text-xs table-fixed">
+        <table className="w-full border-collapse text-sm table-fixed">
           <tbody>
             {data.map((row, rowIndex) => (
               <tr
@@ -59,9 +65,9 @@ const Table = ({ columns = [], data = [], onActionClick }) => {
                 {columns.map((col, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`px-2 py-1.5 border-t border-r last:border-r-0 ${
+                    className={`px-6 py-2  last:border-r-0 ${
                       theme === "dark"
-                        ? " bg-gray-800border-white/10 text-white/80"
+                        ? "bg-gray-800 border-white/10 text-white/80"
                         : "border-[#F1F5F9] text-[#374151]"
                     } ${
                       col.header === "Action" ? "text-center" : ""

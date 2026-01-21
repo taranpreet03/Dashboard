@@ -39,9 +39,7 @@ const Dashboard = () => {
   return (
     <div
       className={`h-screen rounded overflow-hidden ${
-        theme === "dark"
-          ? "bg-gray-800 text-white"
-          : "bg-white text-[#3A4752]"
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
       }`}
     >
       {/* TOP BAR */}
@@ -74,7 +72,11 @@ const Dashboard = () => {
         <select
           value={activeTab}
           onChange={(e) => setActiveTab(e.target.value)}
-          className="ml-auto px-6 py-2 rounded-md text-sm bg-gray-50 border border-gray-200"
+          className={`ml-auto px-6 py-2 rounded-md text-sm border outline-none transition-colors ${
+            theme === "dark"
+              ? "bg-gray-800 text-white border-white/20"
+              : "bg-gray-50 text-black border-gray-200"
+          }`}
         >
           <option value="products">Products</option>
           <option value="carts">Carts</option>
@@ -82,36 +84,41 @@ const Dashboard = () => {
 
         {/* VIEW TOGGLE */}
         <div className="flex gap-2">
-    <button
-      onClick={() => setViewType("list")}
-      className={`p-2 rounded border ${
-        theme === "dark"
-          ? "bg-gray-800 border-white/20"
-          : "bg-gray-100 border-gray-300"
-      } ${      
-        viewType === "list"
-          ? "text-blue-600"
-          : "text-gray-400"
-      }`}
-    >
-      <FaList />
-    </button>
+  <button
+    onClick={() => setViewType("list")}
+    className={`p-2 rounded border transition-colors ${
+      theme === "dark"
+        ? "bg-gray-800 border-white/20"
+        : "bg-gray-100 border-gray-300"
+    } ${
+      viewType === "list"
+        ? "text-blue-600 "
+        : theme === "dark"
+        ? "text-white bg-black"
+        : "text-black"
+    }`}
+  >
+    <FaList />
+  </button>
 
-    <button
-      onClick={() => setViewType("grid")}
-      className={`p-2 rounded border ${
-        theme === "dark"
-          ? "bg-gray-800 border-white/20"
-          : "bg-gray-100 border-gray-300"
-      } ${
-        viewType === "grid"
-          ? "text-blue-600"
-          : "text-gray-400"
-      }`}
-    >
-      <FaThLarge />
-    </button>
-  </div>
+  <button
+    onClick={() => setViewType("grid")}
+    className={`p-2 rounded border transition-colors ${
+      theme === "dark"
+        ? "bg-gray-800 border-white/20"
+        : "bg-gray-100 border-gray-300"
+    } ${
+      viewType === "grid"
+        ? "text-blue-600"
+        : theme === "dark"
+        ? "text-white"
+        : "text-black"
+    }`}
+  >
+    <FaThLarge />
+  </button>
+</div>
+
       </div>
 
       {/* CONTENT */}

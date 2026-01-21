@@ -25,7 +25,7 @@ const ProductTable = ({ products, onSaveProduct }) => {
 
   /* PAGINATION */
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 10;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
@@ -102,7 +102,7 @@ const ProductTable = ({ products, onSaveProduct }) => {
     </div>
   );
 
-  /* ✅ SAVE HANDLER (FIXED) */
+
   const handleSaveProduct = useCallback(
     (updatedProduct) => {
       if (typeof onSaveProduct === "function") {
