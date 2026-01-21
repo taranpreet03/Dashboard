@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaList, FaThLarge } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import filterIcon from "../../assets/Images/Vector.svg";
 import FilterPop from "../../components/Filterpopup";
 import SearchInput from "../../Core/Search";
 import ProductsPage from "./Productpage";
 import { useTheme } from "../../context/ThemeContext";
+import { fetchProducts } from "../../services/productApi"; 
 
 const Layout = () => {
   const { theme } = useTheme();
-  const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
   const [activeTab, setActiveTab] = useState("products");
   const [viewType, setViewType] = useState("list");
   const [showFilter, setShowFilter] = useState(false);
+
+  const [products, setProducts] = useState([]); 
 
   const [filters, setFilters] = useState({
     brand: [],
@@ -24,10 +25,17 @@ const Layout = () => {
     quantity: 0,
   });
 
+
+  useEffect(() => {
+    fetchProducts().then(setProducts);
+  }, []);
+
   return (
     <div
-      className={`h-screen  rounded overflow-hidden ${
-        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
+      className={`h-screen rounded overflow-hidden ${
+        theme === "dark"
+          ? "bg-gray-800 text-white"
+          : "bg-white text-[#3A4752]"
       }`}
     >
       {/* TOP BAR */}
@@ -49,7 +57,7 @@ const Layout = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder={`Search by ${activeTab}...`}
-          className={` w-80 h-10 px-2 rounded-lg ${
+          className={`w-80 h-10 px-2 rounded-lg ${
             theme === "dark"
               ? "bg-gray-800 text-white border-white/10"
               : "bg-white border-gray-200"
@@ -70,6 +78,7 @@ const Layout = () => {
       {/* CONTENT */}
       {activeTab === "products" && (
         <ProductsPage
+          products={products}       
           searchText={searchText}
           filters={filters}
           viewType={viewType}

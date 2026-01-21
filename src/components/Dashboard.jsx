@@ -16,7 +16,6 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("products");
   const [viewType, setViewType] = useState("list");
   const [showFilter, setShowFilter] = useState(false);
-
   const [products, setProducts] = useState([]);
   const [carts, setCarts] = useState([]);
 
