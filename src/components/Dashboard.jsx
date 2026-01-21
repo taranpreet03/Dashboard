@@ -27,13 +27,22 @@ const Dashboard = () => {
     quantity: 0,
   });
 
-  // fetch once
-  useEffect(() => {
-    fetchProducts().then(setProducts);
-    fetchCarts().then(setCarts);
-  }, []);
+  // Fetch carts once
+  // useEffect(() => {
+  //fetchProducts(searchText).then(setProducts);
+  //   fetchCarts().then(setCarts);
+  // }, []);
 
-  // derive brands
+  // search (?q=)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchProducts(searchText).then(setProducts);
+      fetchCarts(searchText).then(setCarts)
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
   const brands = [...new Set(products.map((p) => p.brand))];
 
   return (
@@ -42,105 +51,49 @@ const Dashboard = () => {
         theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
       }`}
     >
-      {/* TOP BAR */}
       <div className="flex items-center gap-3 p-2 mb-4">
-        {/* FILTER */}
-        <button
-          onClick={() => setShowFilter(true)}
-          className={`p-2 rounded border ${
-            theme === "dark"
-              ? "bg-gray-800 border-white/20"
-              : "bg-gray-100 border-gray-300"
-          }`}
-        >
+        <button onClick={() => setShowFilter(true)} className="p-2 rounded ">
           <img src={filterIcon} className="w-4 h-4" />
         </button>
 
-        {/* SEARCH */}
         <SearchInput
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder={`Search by ${activeTab}...`}
-          className={`w-80 h-10 px-2 rounded-lg ${
-            theme === "dark"
-              ? "bg-gray-800 text-white border-white/10"
-              : "bg-white border-gray-200"
-          }`}
+          className="w-80 h-10 px-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-0"
         />
 
-        {/* TAB */}
         <select
           value={activeTab}
           onChange={(e) => setActiveTab(e.target.value)}
-          className={`ml-auto px-6 py-2 rounded-md text-sm border outline-none transition-colors ${
-            theme === "dark"
-              ? "bg-gray-800 text-white border-white/20"
-              : "bg-gray-50 text-black border-gray-200"
-          }`}
+          className="ml-auto px-6 py-2 rounded-md "
         >
           <option value="products">Products</option>
           <option value="carts">Carts</option>
         </select>
 
-        {/* VIEW TOGGLE */}
         <div className="flex gap-2">
-  <button
-    onClick={() => setViewType("list")}
-    className={`p-2 rounded border transition-colors ${
-      theme === "dark"
-        ? "bg-gray-800 border-white/20"
-        : "bg-gray-100 border-gray-300"
-    } ${
-      viewType === "list"
-        ? "text-blue-600 "
-        : theme === "dark"
-        ? "text-white bg-black"
-        : "text-black"
-    }`}
-  >
-    <FaList />
-  </button>
-
-  <button
-    onClick={() => setViewType("grid")}
-    className={`p-2 rounded border transition-colors ${
-      theme === "dark"
-        ? "bg-gray-800 border-white/20"
-        : "bg-gray-100 border-gray-300"
-    } ${
-      viewType === "grid"
-        ? "text-blue-600"
-        : theme === "dark"
-        ? "text-white"
-        : "text-black"
-    }`}
-  >
-    <FaThLarge />
-  </button>
-</div>
-
+          <button onClick={() => setViewType("list")}>
+            <FaList />
+          </button>
+          <button onClick={() => setViewType("grid")}>
+            <FaThLarge />
+          </button>
+        </div>
       </div>
 
-      {/* CONTENT */}
       {activeTab === "products" && (
         <ProductsPage
           products={products}
-          searchText={searchText}
           filters={filters}
           viewType={viewType}
         />
       )}
 
       {activeTab === "carts" && (
-        <CartsPage
-          carts={carts}
-          searchText={searchText}
-          filters={filters}
-          viewType={viewType}
-        />
+        <CartsPage carts={carts} filters={filters} viewType={viewType} />
       )}
 
-      {/* FILTER POPUP */}
       <FilterPop
         show={showFilter}
         onClose={() => setShowFilter(false)}
