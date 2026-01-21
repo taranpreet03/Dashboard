@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EditProductModal = ({ product, onClose, onSave }) => {
   if (!product) return null;
 
   const [formData, setFormData] = useState({
-    title: product.title || "",
-    category: product.category || "",
-    type: product.type || "",
-    brand: product.brand || "",
-    price: product.price || "",
-    stock: product.stock || "",
-    size: product.size?.join(", ") || "",
+    title: "",
+    category: "",
+    type: "",
+    brand: "",
+    price: "",
+    stock: "",
+    size: "",
   });
+
+  // ✅ Sync state when product changes
+  useEffect(() => {
+    setFormData({
+      title: product.title || "",
+      category: product.category || "",
+      type: product.type || "",
+      brand: product.brand || "",
+      price: product.price || "",
+      stock: product.stock || "",
+      size: product.size?.join(", ") || "",
+    });
+  }, [product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,15 +32,21 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   };
 
   const handleSave = () => {
+    // ✅ Defensive check
+    if (typeof onSave !== "function") {
+      console.error("onSave is not a function");
+      return;
+    }
+
     const updatedProduct = {
       ...product,
       ...formData,
       price: Number(formData.price),
       stock: Number(formData.stock),
       size: formData.size
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean),
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
     };
 
     onSave(updatedProduct);
@@ -40,35 +59,30 @@ const EditProductModal = ({ product, onClose, onSave }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white w-[600px] max-h-[90vh] overflow-y-auto rounded-lg p-6 relative"
+        className="bg-white w-[600px] rounded-lg p-6 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-xl text-gray-500 hover:text-black"
-        >
+        <button onClick={onClose} className="absolute top-3 right-3 text-xl">
           ✕
         </button>
 
         <h2 className="text-xl font-semibold mb-4">Edit Product</h2>
 
-        <div className="space-y-3 text-sm">
-          
+        <div className="space-y-3">
           <input
             name="title"
             value={formData.title}
             onChange={handleChange}
             placeholder="Title"
-            className="w-full border border-gray-200 rounded px-3 py-2"
-            />
-            
+            className="w-full px-3 py-2"
+          />
 
           <input
             name="category"
             value={formData.category}
             onChange={handleChange}
             placeholder="Category"
-            className="w-full border border-gray-200 rounded px-3 py-2"
+            className="w-full  px-3 py-2"
           />
 
           <input
@@ -76,7 +90,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.type}
             onChange={handleChange}
             placeholder="Type"
-            className="w-full border border-gray-200 rounded px-3 py-2"
+            className="w-full  px-3 py-2"
           />
 
           <input
@@ -84,50 +98,45 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.brand}
             onChange={handleChange}
             placeholder="Brand"
-            className="w-full border border-gray-200 rounded px-3 py-2"
+            className="w-full  px-3 py-2"
           />
 
           <div className="grid grid-cols-2 gap-3">
             <input
               name="price"
+              type="number"
               value={formData.price}
               onChange={handleChange}
               placeholder="Price"
-              type="number"
-              className="border border-gray-200 rounded px-3 py-2"
+              className=" px-3 py-2"
             />
 
-          <div className="grid grid-cols-2 gap-3">
-        
             <input
               name="stock"
+              type="number"
               value={formData.stock}
               onChange={handleChange}
               placeholder="Stock"
-              type="number"
-              className="border border-gray-200 rounded px-3 py-2"
+              className=" px-3 py-2"
             />
           </div>
 
-          </div>
           <input
             name="size"
             value={formData.size}
             onChange={handleChange}
             placeholder="Sizes (S, M, L)"
-            className="w-full border border-gray-200 rounded px-3 py-2"
+            className="w-full  px-3 py-2"
           />
 
-          <div className="flex justify-end gap-3 pt-3">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-blue-600 text-grey-500 rounded hover:bg-[#DCE4FF]"
-            >
+          <div className="flex justify-end gap-3 pt-4">
+            <button onClick={onClose} className="px-4 py-2 border rounded">
               Cancel
             </button>
+
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-blue-600 text-grey-500 rounded hover:bg-[#DCE4FF]"
+              className="px-4 py-2 bg-blue-600 text-black rounded"
             >
               Save Changes
             </button>

@@ -6,7 +6,7 @@ import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal, FiChevronDown } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
-const ProductTable = ({ products }) => {
+const ProductTable = ({ products, onSaveProduct }) => {
   const { theme } = useTheme();
 
   const [viewProduct, setViewProduct] = useState(null);
@@ -14,11 +14,7 @@ const ProductTable = ({ products }) => {
   const [activeRowId, setActiveRowId] = useState(null);
 
   /* SORT STATE */
-  const [sort, setSort] = useState({
-    key: null,
-    direction: "asc",
-  });
-
+  const [sort, setSort] = useState({ key: null, direction: "asc" });
   const [openSortKey, setOpenSortKey] = useState(null);
 
   const applySort = (key, direction) => {
@@ -33,33 +29,37 @@ const ProductTable = ({ products }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
-  /* SORT DATA */
-  const sortedProducts = [...products].sort((x, y) => {
-    if (!sort.key) return 0;
+  /* SORT DATA (memoized) */
+  const sortedProducts = useMemo(() => {
+    if (!sort.key) return products;
 
-    let xValue = x[sort.key];
-    let yValue = y[sort.key];
+    return [...products].sort((x, y) => {
+      let xValue = x[sort.key];
+      let yValue = y[sort.key];
 
-    if (typeof xValue === "string") {
-      xValue = xValue.toLowerCase();
-      yValue = yValue.toLowerCase();
-    }
+      if (typeof xValue === "string") {
+        xValue = xValue.toLowerCase();
+        yValue = yValue.toLowerCase();
+      }
 
-    if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
-    if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
-    return 0;
-  });
+      if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
+      if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [products, sort]);
 
   const paginatedProducts = sortedProducts.slice(
     startIndex,
-    startIndex + itemsPerPage,
+    startIndex + itemsPerPage
   );
 
   /* SORT DROPDOWN */
   const SortDropdown = ({ sortKey, type }) => (
-    <div className="relative ml-auto ">
+    <div className="relative ml-auto">
       <button
-        onClick={() => setOpenSortKey(openSortKey === sortKey ? null : sortKey)}
+        onClick={() =>
+          setOpenSortKey(openSortKey === sortKey ? null : sortKey)
+        }
       >
         <FiChevronDown size={14} />
       </button>
@@ -69,13 +69,13 @@ const ProductTable = ({ products }) => {
           {type === "string" ? (
             <>
               <button
-                className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
                 onClick={() => applySort(sortKey, "asc")}
               >
                 A → Z
               </button>
               <button
-                className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
                 onClick={() => applySort(sortKey, "desc")}
               >
                 Z → A
@@ -84,13 +84,13 @@ const ProductTable = ({ products }) => {
           ) : (
             <>
               <button
-                className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
                 onClick={() => applySort(sortKey, "asc")}
               >
                 Low → High
               </button>
               <button
-                className="w-full text-left px-3 py-2 hover:bg-[#cbd6ff]"
+                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
                 onClick={() => applySort(sortKey, "desc")}
               >
                 High → Low
@@ -100,6 +100,16 @@ const ProductTable = ({ products }) => {
         </div>
       )}
     </div>
+  );
+
+  /* ✅ SAVE HANDLER (FIXED) */
+  const handleSaveProduct = useCallback(
+    (updatedProduct) => {
+      if (typeof onSaveProduct === "function") {
+        onSaveProduct(updatedProduct);
+      }
+    },
+    [onSaveProduct]
   );
 
   /* CATEGORY BADGE */
@@ -167,13 +177,12 @@ const ProductTable = ({ products }) => {
         const rowId = row._id;
 
         return (
-          <div className="relative flex justify-center overflow-visible">
+          <div className="relative flex justify-center">
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
-              }
-              className="bg-transparent p-1 rounded-none focus:outline-none hover:bg-transparent"
-            >
+              } className="bg-transparent"
+            > 
               <FiMoreHorizontal size={16} />
             </button>
 
@@ -184,7 +193,7 @@ const ProductTable = ({ products }) => {
                     setViewProduct(row);
                     setActiveRowId(null);
                   }}
-                  className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                  className="w-full  px-3 py-2 text-left hover:bg-[#DCE4FF]"
                 >
                   View
                 </button>
@@ -194,7 +203,7 @@ const ProductTable = ({ products }) => {
                     setEditProduct(row);
                     setActiveRowId(null);
                   }}
-                  className="w-full text-left px-3 py-2 hover:bg-[#DCE4FF]"
+                  className="w-full px-3 py-2 text-left hover:bg-[#DCE4FF]"
                 >
                   Edit
                 </button>
@@ -209,7 +218,9 @@ const ProductTable = ({ products }) => {
   return (
     <div
       className={`h-screen rounded overflow-hidden ${
-        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-[#3A4752]"
+        theme === "dark"
+          ? "bg-gray-800 text-white"
+          : "bg-white text-[#3A4752]"
       }`}
     >
       <Table columns={columns} data={paginatedProducts} />
@@ -231,6 +242,7 @@ const ProductTable = ({ products }) => {
         <EditProductModal
           product={editProduct}
           onClose={() => setEditProduct(null)}
+          onSave={handleSaveProduct}
         />
       )}
     </div>

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { FaList, FaThLarge } from "react-icons/fa";
+import { useEffect, useState, useMemo } from "react";
+import { FaList, FaThLarge,  } from "react-icons/fa";
 import filterIcon from "../../assets/Images/Vector.svg";
 import FilterPop from "../../components/Filterpopup";
 import SearchInput from "../../Core/Search";
 import ProductsPage from "./Productpage";
 import { useTheme } from "../../context/ThemeContext";
-import { fetchProducts } from "../../services/productApi"; 
+import { fetchProducts } from "../../services/productApi";
 
 const Layout = () => {
   const { theme } = useTheme();
@@ -15,7 +15,7 @@ const Layout = () => {
   const [viewType, setViewType] = useState("list");
   const [showFilter, setShowFilter] = useState(false);
 
-  const [products, setProducts] = useState([]); 
+  const [products, setProducts] = useState([]);
 
   const [filters, setFilters] = useState({
     brand: [],
@@ -25,10 +25,25 @@ const Layout = () => {
     quantity: 0,
   });
 
-
   useEffect(() => {
     fetchProducts().then(setProducts);
   }, []);
+
+
+
+  /* Memo filter */
+  const filteredProducts = useMemo(() => {
+
+    return products.filter((product) => {
+      const matchesSearch = product.title
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase());
+
+      const matchesPrice = product.price <= filters.price;
+
+      return matchesSearch && matchesPrice;
+    });
+  }, [products, searchText, filters.price]);
 
   return (
     <div
@@ -64,6 +79,8 @@ const Layout = () => {
           }`}
         />
 
+        
+
         {/* VIEW TOGGLE */}
         <div className="flex gap-2 ml-auto">
           <button onClick={() => setViewType("list")} className="p-2">
@@ -78,7 +95,7 @@ const Layout = () => {
       {/* CONTENT */}
       {activeTab === "products" && (
         <ProductsPage
-          products={products}       
+          products={filteredProducts}   
           searchText={searchText}
           filters={filters}
           viewType={viewType}
