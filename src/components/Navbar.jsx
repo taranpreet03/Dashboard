@@ -1,11 +1,4 @@
-import {
-  FaBolt,
-  FaBook,
-  FaRoute,
-  FaSearch,
-  FaMoon,
-  FaSun,
-} from "react-icons/fa";
+import {FaBolt,FaBook,FaRoute,FaSearch,FaMoon,FaSun,} from "react-icons/fa";
 import Bell from "../assets/Images/bell.gif";
 import Button from "../Core/Button";
 import { useTheme } from "../context/ThemeContext";
@@ -22,13 +15,9 @@ const Navbar = () => {
       }`}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-        </div>
+        <div className="flex items-center gap-3"></div>
 
-      
         <div className="flex items-center gap-3">
-          
-
           {/* ACTION BUTTONS  */}
           <Button icon={FaBolt} text="Quick Actions" />
           <Button icon={FaBook} text="User Manual" />
@@ -39,16 +28,15 @@ const Navbar = () => {
 
           {/* THEME TOGGLE */}
           <button
-  onClick={toggleTheme}
-  className={`p-2 rounded-full transition ${
-    theme === "dark"
-      ? "bg-white text-black hover:bg-gray-200"
-      : "text-gray-800 hover:bg-black/10"
-  }`}
->
-  {theme === "dark" ? <FaSun /> : <FaMoon />}
-</button>
-
+            onClick={toggleTheme}
+            className={`p-2 rounded-full transition ${
+              theme === "dark"
+                ? "bg-white text-black hover:bg-gray-200"
+                : "text-gray-800 hover:bg-black/10"
+            }`}
+          >
+            {theme === "dark" ? <FaSun /> : <FaMoon />}
+          </button>
 
           {/* NOTIFICATION */}
           <img src={Bell} alt="Notification" className="h-6 w-6 " />
