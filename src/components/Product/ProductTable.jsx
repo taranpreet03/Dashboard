@@ -1,21 +1,42 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal, FiChevronDown } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
+import { fetchProducts } from "../../services/ProductAPI";
 
-const ProductTable = ({ products, onSaveProduct }) => {
+const ProductTable = ({ onSaveProduct }) => {
   const { theme } = useTheme();
-
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
-
-  /* SORT STATE */
-  const [sort, setSort] = useState({ key: null, direction: "asc" });
+  const [sort, setSort] = useState({ key: "", direction: "asc" });
   const [openSortKey, setOpenSortKey] = useState(null);
+
+  /* PAGINATION */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  /*  SORT */
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+
+      const data = await fetchProducts({
+        sortKey: sort.key,
+        sortOrder: sort.direction,
+      });
+
+      setProducts(data);
+      setLoading(false);
+    };
+
+    loadProducts();
+  }, [sort, currentPage]);
 
   const applySort = (key, direction) => {
     setSort({ key, direction });
@@ -23,37 +44,16 @@ const ProductTable = ({ products, onSaveProduct }) => {
     setCurrentPage(1);
   };
 
-  /* PAGINATION */
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  /* PAGINATION  */
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  /* SORT DATA (memoized) */
-  const sortedProducts = useMemo(() => {
-    if (!sort.key) return products;
-
-    return [...products].sort((x, y) => {
-      let xValue = x[sort.key];
-      let yValue = y[sort.key];
-
-      if (typeof xValue === "string") {
-        xValue = xValue.toLowerCase();
-        yValue = yValue.toLowerCase();
-      }
-
-      if (xValue < yValue) return sort.direction === "asc" ? -1 : 1;
-      if (xValue > yValue) return sort.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [products, sort]);
-
-  const paginatedProducts = sortedProducts.slice(
+  const paginatedProducts = products.slice(
     startIndex,
     startIndex + itemsPerPage
   );
 
-  /* SORT DROPDOWN */
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  /* SORT DROPDOWN  */
   const SortDropdown = ({ sortKey, type }) => (
     <div className="relative ml-auto">
       <button
@@ -66,48 +66,34 @@ const ProductTable = ({ products, onSaveProduct }) => {
 
       {openSortKey === sortKey && (
         <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF]">
-          {type === "string" ? (
-            <>
-              <button
-                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
-                onClick={() => applySort(sortKey, "asc")}
-              >
-                A → Z
-              </button>
-              <button
-                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
-                onClick={() => applySort(sortKey, "desc")}
-              >
-                Z → A
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
-                onClick={() => applySort(sortKey, "asc")}
-              >
-                Low → High
-              </button>
-              <button
-                className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
-                onClick={() => applySort(sortKey, "desc")}
-              >
-                High → Low
-              </button>
-            </>
-          )}
+          <button
+            className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
+            onClick={() => applySort(sortKey, "asc")}
+          >
+            {type === "string" ? "A → Z" : "Low → High"}
+          </button>
+          <button
+            className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
+            onClick={() => applySort(sortKey, "desc")}
+          >
+            {type === "string" ? "Z → A" : "High → Low"}
+          </button>
         </div>
       )}
     </div>
   );
-
-
+//Save handler
   const handleSaveProduct = useCallback(
     (updatedProduct) => {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+      );
+
       if (typeof onSaveProduct === "function") {
         onSaveProduct(updatedProduct);
       }
+
+      setEditProduct(null); 
     },
     [onSaveProduct]
   );
@@ -131,7 +117,7 @@ const ProductTable = ({ products, onSaveProduct }) => {
     );
   };
 
-  /* COLUMNS */
+  /* COLUMNS  */
   const columns = [
     { header: "#", render: (_, i) => startIndex + i + 1 },
 
@@ -174,15 +160,15 @@ const ProductTable = ({ products, onSaveProduct }) => {
     {
       header: "Action",
       render: (row) => {
-        const rowId = row._id;
+        const rowId = row.id;
 
         return (
           <div className="relative flex justify-center">
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
-              } className="bg-transparent"
-            > 
+              }className="bg-transparent"
+            >
               <FiMoreHorizontal size={16} />
             </button>
 
@@ -193,7 +179,7 @@ const ProductTable = ({ products, onSaveProduct }) => {
                     setViewProduct(row);
                     setActiveRowId(null);
                   }}
-                  className="w-full  px-3 py-2 text-left hover:bg-[#DCE4FF]"
+                  className="w-full px-3 py-2 text-left hover:bg-[#DCE4FF]"
                 >
                   View
                 </button>

@@ -27,21 +27,29 @@ const Dashboard = () => {
     quantity: 0,
   });
 
-  // Fetch carts once
-  // useEffect(() => {
-  //fetchProducts(searchText).then(setProducts);
-  //   fetchCarts().then(setCarts);
-  // }, []);
+  const [sort, setSort] = useState({
+    key: "",
+    order: "asc",
+  });
 
-  // search (?q=)
+  // SEARCH + SORT
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchProducts(searchText).then(setProducts);
-      fetchCarts(searchText).then(setCarts)
+      if (activeTab === "products") {
+        fetchProducts({
+          searchText,
+          sortKey: sort.key,
+          sortOrder: sort.order,
+        }).then(setProducts);
+      }
+
+      if (activeTab === "carts") {
+        fetchCarts().then(setCarts); 
+      }
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchText]);
+  }, [searchText, sort, activeTab]);
 
   const brands = [...new Set(products.map((p) => p.brand))];
 
@@ -52,7 +60,7 @@ const Dashboard = () => {
       }`}
     >
       <div className="flex items-center gap-3 p-2 mb-4">
-        <button onClick={() => setShowFilter(true)} className="p-2 rounded ">
+        <button onClick={() => setShowFilter(true)} className="p-2 rounded">
           <img src={filterIcon} className="w-4 h-4" />
         </button>
 
@@ -66,7 +74,7 @@ const Dashboard = () => {
         <select
           value={activeTab}
           onChange={(e) => setActiveTab(e.target.value)}
-          className="ml-auto px-6 py-2 rounded-md "
+          className="ml-auto px-6 py-2 border border-gray-300 rounded-md"
         >
           <option value="products">Products</option>
           <option value="carts">Carts</option>
@@ -87,6 +95,8 @@ const Dashboard = () => {
           products={products}
           filters={filters}
           viewType={viewType}
+          sort={sort}
+          setSort={setSort}
         />
       )}
 
