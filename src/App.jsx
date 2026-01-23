@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import "./App.css";
+// import "./App.css";
 
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
@@ -15,30 +15,30 @@ function App() {
   const { theme } = useTheme();
 
   return (
-  <div
-  className={`flex h-screen w-screen overflow-hidden ${
-    theme === "light"
-      ?"bg-[#E7ECFF] text-[#3A4752]" 
-      : "bg-gradient-to-br from-[#0B1626] to-[#1E3557] text-white"
-      
-  }`}
->
+    <div
+      className={` min-h-screen ${
+        theme === "light"
+          ? "bg-[#E7ECFF] text-[#3A4752]"
+          : "bg-gradient-to-br from-[#0B1626] to-[#1E3557] text-white"
+      }`}
+    >
+      <div className="flex">
+        <Sidebar />
 
-      <Sidebar />
+        <div className="flex flex-col flex-1 lg:ml-20 ">
+          <Navbar />
 
-      <div className="flex flex-col flex-1 overflow-hidden" style={{marginLeft: "80px"}}>
-        <Navbar />
-
-    
-        <main className="flex-1 w-full p-2 overflow-hidden mb-2">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/products" element={<Layout />} />
-            <Route path="/carts" element={<CartLayout />} />
-            <Route path="/posts" element={<PostPage />} />
-            <Route path="/album" element={<AlbumPage />} />
-          </Routes>
-        </main>
+          <main className="flex-1 w-full p-2 overflow-auto mb-2">
+            
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/products" element={<Layout />} />
+              <Route path="/carts" element={<CartLayout />} />
+              <Route path="/posts" element={<PostPage />} />
+              <Route path="/album" element={<AlbumPage />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </div>
   );

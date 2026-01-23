@@ -211,11 +211,11 @@ const ProductTable = ({ onSaveProduct }) => {
     >
       <Table columns={columns} data={paginatedProducts} />
 
-      <Pagination
+      {/* <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-      />
+      /> */}
 
       {viewProduct && (
         <ProductDetailsModal

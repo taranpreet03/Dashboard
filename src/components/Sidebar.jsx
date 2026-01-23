@@ -14,14 +14,16 @@ const Sidebar = () => {
   const { theme } = useTheme();
 
   return (
-    <aside
-  className={`group fixed top-0 left-0 h-screen w-20 hover:w-60 transition-all duration-300 flex flex-col
-  ${
-    theme === "dark"
-      ? "bg-gradient-to-b from-[#10225F] via-[#172E7A] to-[#0B1843]"
-      : "bg-[#0B1843]"
-  }
-`}
+<aside
+  className={`fixed top-0 left-0 z-50 h-screen
+    hidden lg:flex flex-col group
+    w-20 hover:w-60 transition-all duration-300
+    ${
+      theme === "dark"
+        ? "bg-gradient-to-b from-[#10225F] via-[#172E7A] to-[#0B1843]"
+        : "bg-[#0B1843]"
+    }
+  `}
 >
 
       {/* LOGO */}
@@ -46,7 +48,7 @@ const Sidebar = () => {
           <span className="hidden group-hover:inline text-white">Products</span>
         </NavLink>
 
-  <NavLink
+        <NavLink
           to="/carts"
           className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10 cursor-pointer"
         >
@@ -68,8 +70,6 @@ const Sidebar = () => {
           <FaImages className="text-white text-xl" />
           <span className="hidden group-hover:inline text-white">Albums</span>
         </NavLink>
-
-        
       </nav>
     </aside>
   );

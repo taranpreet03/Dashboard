@@ -126,16 +126,9 @@ const Dashboard = () => {
   const { theme } = useTheme();
 
   return (
-    <div
-      className={`h-screen rounded overflow-hidden ${
-        theme === "dark"
-          ? "bg-gray-800 text-white"
-          : "bg-white text-[#3A4752]"
-      }`}
-    >
+    
       <div className="flex items-center justify-center h-full text-xl font-semibold">
         <h1>Dashboard</h1>
-      </div>
     </div>
   );
 };
