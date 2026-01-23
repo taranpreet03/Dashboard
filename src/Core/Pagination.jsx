@@ -29,8 +29,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         >
           Prev
         </button>
-
-        {/* PAGE NUMBERS */}
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
           <button
             key={page}

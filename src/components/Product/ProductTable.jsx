@@ -9,11 +9,15 @@ import { fetchProducts } from "../../services/ProductAPI";
 
 const ProductTable = ({ onSaveProduct }) => {
   const { theme } = useTheme();
+
   const [products, setProducts] = useState([]);
+  const [totalCount, setTotalCount] = useState(0); // ✅ NEW
   const [loading, setLoading] = useState(false);
+
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [activeRowId, setActiveRowId] = useState(null);
+
   const [sort, setSort] = useState({ key: "", direction: "asc" });
   const [openSortKey, setOpenSortKey] = useState(null);
 
@@ -21,39 +25,41 @@ const ProductTable = ({ onSaveProduct }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  /*  SORT */
+  /* FETCH PRODUCTS */
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
 
-      const data = await fetchProducts({
-        sortKey: sort.key,
-        sortOrder: sort.direction,
-      });
+      try {
+        const data = await fetchProducts({
+          page: currentPage,
+          limit: itemsPerPage,
+          sortKey: sort.key,
+          sortOrder: sort.direction,
+        });
 
-      setProducts(data);
-      setLoading(false);
+        setProducts(data.products);
+        setTotalCount(data.total);
+      } catch (error) {
+        console.error("Failed to load products:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadProducts();
   }, [sort, currentPage]);
 
+  /* SORT */
   const applySort = (key, direction) => {
     setSort({ key, direction });
     setOpenSortKey(null);
     setCurrentPage(1);
   };
 
-  /* PAGINATION  */
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedProducts = products.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  /* SORT DROPDOWN  */
+  /* SORT DROPDOWN */
   const SortDropdown = ({ sortKey, type }) => (
     <div className="relative ml-auto">
       <button
@@ -72,6 +78,7 @@ const ProductTable = ({ onSaveProduct }) => {
           >
             {type === "string" ? "A → Z" : "Low → High"}
           </button>
+
           <button
             className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
             onClick={() => applySort(sortKey, "desc")}
@@ -82,7 +89,8 @@ const ProductTable = ({ onSaveProduct }) => {
       )}
     </div>
   );
-//Save handler
+
+  /* SAVE HANDLER */
   const handleSaveProduct = useCallback(
     (updatedProduct) => {
       setProducts((prev) =>
@@ -93,7 +101,7 @@ const ProductTable = ({ onSaveProduct }) => {
         onSaveProduct(updatedProduct);
       }
 
-      setEditProduct(null); 
+      setEditProduct(null);
     },
     [onSaveProduct]
   );
@@ -117,9 +125,12 @@ const ProductTable = ({ onSaveProduct }) => {
     );
   };
 
-  /* COLUMNS  */
+  /* COLUMNS */
   const columns = [
-    { header: "#", render: (_, i) => startIndex + i + 1 },
+    {
+      header: "#",
+      render: (_, i) => (currentPage - 1) * itemsPerPage + i + 1,
+    },
 
     {
       header: (
@@ -167,7 +178,8 @@ const ProductTable = ({ onSaveProduct }) => {
             <button
               onClick={() =>
                 setActiveRowId(activeRowId === rowId ? null : rowId)
-              }className="bg-transparent"
+              }
+              className="bg-transparent"
             >
               <FiMoreHorizontal size={16} />
             </button>
@@ -209,13 +221,13 @@ const ProductTable = ({ onSaveProduct }) => {
           : "bg-white text-[#3A4752]"
       }`}
     >
-      <Table columns={columns} data={paginatedProducts} />
+      <Table columns={columns} data={products} />
 
-      {/* <Pagination
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
-      /> */}
+      />
 
       {viewProduct && (
         <ProductDetailsModal

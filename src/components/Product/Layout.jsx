@@ -63,7 +63,7 @@ const Layout = () => {
       <div className="flex items-center gap-3 p-2 mb-4">
         <div
           onClick={() => setShowFilter(true)}
-          className="p-2 rounded cursor-pointer border"
+          className="p-2 rounded cursor-pointer border border-gray-200"
         >
           <img src={filterIcon} className="w-4 h-4" />
         </div>
