@@ -12,7 +12,7 @@ import Bell from "../assets/Images/bell.gif";
 import Button from "../Core/Button";
 import { useTheme } from "../context/ThemeContext";
 
-const Navbar = () => {
+const Navbar = ({ setIsSidebarOpen }) => {
   const { theme, toggleTheme } = useTheme();
 
   const navBg =
@@ -22,13 +22,32 @@ const Navbar = () => {
 
   return (
     <nav className={`border-b ${navBg} w-full`}>
-  <div className="flex items-center justify-between px-2 sm:px-6 py-4 w-full">
+      <div className="flex items-center justify-between px-2 sm:px-6 py-4 w-full">
 
-    {/* Mobile + Tablet */}
-    <div className="flex items-center gap-4 w-full lg:hidden">
-      <FaBars className="h-5 w-5 cursor-pointer" />
-      <img src={Bell} alt="Notification" className="h-6 w-6 ml-auto" />
-    </div>
+        {/* Mobile + Tablet */}
+        <div className="flex items-center gap-4 w-full lg:hidden">
+          <FaBars
+            className="h-5 w-5 cursor-pointer"
+            onClick={() => setIsSidebarOpen(true)}
+          />
+          <img
+            src={Bell}
+            alt="Notification"
+            className="h-6 w-6 ml-auto"
+          />
+          <div className="flex items-center gap-2 cursor-pointer">
+            <div className="h-8 w-8 rounded-full bg-red-500 grid place-items-center text-white text-sm font-semibold">
+              T
+            </div>
+
+            <div>
+              <p className="text-sm font-medium">Taranpreet Kaur</p>
+              <p className="text-[10px] text-gray-500">
+                Frontend engineer
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Desktop */}
         <div className="hidden lg:flex items-center gap-3 ml-auto">
@@ -56,7 +75,9 @@ const Navbar = () => {
 
             <div>
               <p className="text-sm font-medium">Taranpreet Kaur</p>
-              <p className="text-[10px] text-gray-500">Frontend engineer</p>
+              <p className="text-[10px] text-gray-500">
+                Frontend engineer
+              </p>
             </div>
           </div>
 
