@@ -1,63 +1,51 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import Table from "../../Core/Table";
 import Pagination from "../../Core/Pagination";
 import ProductDetailsModal from "./ProductDetailsModal";
 import EditProductModal from "./EditProductModal";
 import { FiMoreHorizontal, FiChevronDown } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
-import { fetchProducts } from "../../services/ProductAPI";
 
-const ProductTable = ({ onSaveProduct }) => {
+const itemsPerPage = 10;
+
+const ProductTable = ({
+  products = [],
+  total = 0,
+  currentPage,        // ✅ FROM PARENT
+  setCurrentPage,     // ✅ FROM PARENT
+  onSaveProduct,
+}) => {
   const { theme } = useTheme();
 
-  const [products, setProducts] = useState([]);
-  const [totalCount, setTotalCount] = useState(0); // ✅ NEW
-  const [loading, setLoading] = useState(false);
+  /* SORT */
+  const [sort, setSort] = useState({
+    key: "",
+    direction: "asc",
+  });
 
-  const [viewProduct, setViewProduct] = useState(null);
-  const [editProduct, setEditProduct] = useState(null);
-  const [activeRowId, setActiveRowId] = useState(null);
-
-  const [sort, setSort] = useState({ key: "", direction: "asc" });
   const [openSortKey, setOpenSortKey] = useState(null);
 
-  /* PAGINATION */
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  /* ACTION MENU */
+  const [openMenuId, setOpenMenuId] = useState(null);
 
-  /* FETCH PRODUCTS */
-  useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
+  /* MODALS */
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
-      try {
-        const data = await fetchProducts({
-          page: currentPage,
-          limit: itemsPerPage,
-          sortKey: sort.key,
-          sortOrder: sort.direction,
-        });
-
-        setProducts(data.products);
-        setTotalCount(data.total);
-      } catch (error) {
-        console.error("Failed to load products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-  }, [sort, currentPage]);
-
-  /* SORT */
+  /* SORT (UI ONLY) */
   const applySort = (key, direction) => {
     setSort({ key, direction });
     setOpenSortKey(null);
-    setCurrentPage(1);
+    setCurrentPage(1); // reset page
   };
 
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const totalPages = Math.ceil(total / itemsPerPage);
+
+  /* SAVE */
+  const handleSaveProduct = (updated) => {
+    onSaveProduct(updated);
+  };
 
   /* SORT DROPDOWN */
   const SortDropdown = ({ sortKey, type }) => (
@@ -71,7 +59,8 @@ const ProductTable = ({ onSaveProduct }) => {
       </button>
 
       {openSortKey === sortKey && (
-        <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF]">
+        <div className="absolute z-20 mt-1 w-36 bg-[#DCE4FF] rounded shadow">
+
           <button
             className="w-full px-3 py-2 text-left hover:bg-[#cbd6ff]"
             onClick={() => applySort(sortKey, "asc")}
@@ -85,72 +74,78 @@ const ProductTable = ({ onSaveProduct }) => {
           >
             {type === "string" ? "Z → A" : "High → Low"}
           </button>
+
         </div>
       )}
     </div>
   );
 
-  /* SAVE HANDLER */
-  const handleSaveProduct = useCallback(
-    (updatedProduct) => {
-      setProducts((prev) =>
-        prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-      );
+  /* ACTION MENU */
+  const ActionMenu = ({ product }) => (
+    <div className="relative">
 
-      if (typeof onSaveProduct === "function") {
-        onSaveProduct(updatedProduct);
-      }
-
-      setEditProduct(null);
-    },
-    [onSaveProduct]
-  );
-
-  /* CATEGORY BADGE */
-  const renderCategoryBadge = (category) => {
-    const styles = {
-      men: "text-blue-600 border-blue-300 bg-blue-50",
-      women: "text-pink-600 border-pink-300 bg-pink-50",
-      kids: "text-green-600 border-green-300 bg-green-50",
-    };
-
-    return (
-      <span
-        className={`px-3 py-1 text-xs rounded border ${
-          styles[category?.toLowerCase()] || "border-gray-300"
-        }`}
+      <button
+        onClick={() =>
+          setOpenMenuId(
+            openMenuId === product.id ? null : product.id
+          )
+        }
       >
-        {category}
-      </span>
-    );
-  };
+        <FiMoreHorizontal size={16} />
+      </button>
+
+      {openMenuId === product.id && (
+        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-30">
+
+          {/* VIEW */}
+          <button
+            onClick={() => {
+              setSelectedProduct(product);
+              setShowDetails(true);
+              setOpenMenuId(null);
+            }}
+            className="w-full px-3 py-2 text-left hover:bg-[#E7ECFF] "
+          >
+            View
+          </button>
+
+          {/* EDIT */}
+          <button
+            onClick={() => {
+              setSelectedProduct(product);
+              setShowEdit(true);
+              setOpenMenuId(null);
+            }}
+            className="w-full px-3 py-2 text-left hover:bg-[#E7ECFF] "
+          >
+            Edit
+          </button>
+
+        </div>
+      )}
+    </div>
+  );
 
   /* COLUMNS */
   const columns = [
     {
       header: "#",
-      render: (_, i) => (currentPage - 1) * itemsPerPage + i + 1,
+      render: (_, i) =>
+        (currentPage - 1) * itemsPerPage + i + 1,
     },
 
     {
       header: (
-        <div className="flex items-center gap-1">
+        <div className="flex gap-1">
           Title <SortDropdown sortKey="title" type="string" />
         </div>
       ),
       accessor: "title",
     },
 
-    { header: "Size", render: (row) => row.size?.join(", ") },
-
-    {
-      header: "Category",
-      render: (row) => renderCategoryBadge(row.category),
-    },
-
     {
       header: (
-        <div className="flex items-center gap-1">
+        <div className="flex gap-1">
           Price <SortDropdown sortKey="price" type="number" />
         </div>
       ),
@@ -159,7 +154,7 @@ const ProductTable = ({ onSaveProduct }) => {
 
     {
       header: (
-        <div className="flex items-center gap-1">
+        <div className="flex gap-1">
           Stock <SortDropdown sortKey="stock" type="number" />
         </div>
       ),
@@ -170,79 +165,43 @@ const ProductTable = ({ onSaveProduct }) => {
 
     {
       header: "Action",
-      render: (row) => {
-        const rowId = row.id;
-
-        return (
-          <div className="relative flex justify-center">
-            <button
-              onClick={() =>
-                setActiveRowId(activeRowId === rowId ? null : rowId)
-              }
-              className="bg-transparent"
-            >
-              <FiMoreHorizontal size={16} />
-            </button>
-
-            {activeRowId === rowId && (
-              <div className="absolute top-6 right-0 z-50 w-44 bg-white rounded p-2 shadow-lg">
-                <button
-                  onClick={() => {
-                    setViewProduct(row);
-                    setActiveRowId(null);
-                  }}
-                  className="w-full px-3 py-2 text-left hover:bg-[#DCE4FF]"
-                >
-                  View
-                </button>
-
-                <button
-                  onClick={() => {
-                    setEditProduct(row);
-                    setActiveRowId(null);
-                  }}
-                  className="w-full px-3 py-2 text-left hover:bg-[#DCE4FF]"
-                >
-                  Edit
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      },
+      render: (row) => <ActionMenu product={row} />,
     },
   ];
 
   return (
     <div
-      className={`h-screen rounded overflow-hidden ${
+      className={`h-full ${
         theme === "dark"
           ? "bg-gray-800 text-white"
           : "bg-white text-[#3A4752]"
       }`}
     >
-      <Table columns={columns} data={products} />
 
+      <Table columns={columns} data={products} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
 
-      {viewProduct && (
+      {/* VIEW MODAL */}
+      {showDetails && (
         <ProductDetailsModal
-          product={viewProduct}
-          onClose={() => setViewProduct(null)}
+          product={selectedProduct}
+          onClose={() => setShowDetails(false)}
         />
       )}
 
-      {editProduct && (
+      {/* EDIT MODAL */}
+      {showEdit && (
         <EditProductModal
-          product={editProduct}
-          onClose={() => setEditProduct(null)}
+          product={selectedProduct}
+          onClose={() => setShowEdit(false)}
           onSave={handleSaveProduct}
         />
       )}
+
     </div>
   );
 };

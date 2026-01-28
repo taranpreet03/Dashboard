@@ -13,7 +13,6 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     size: "",
   });
 
-  // ✅ Sync state when product changes
   useEffect(() => {
     setFormData({
       title: product.title || "",
@@ -32,7 +31,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   };
 
   const handleSave = () => {
-    // ✅ Defensive check
+  
     if (typeof onSave !== "function") {
       console.error("onSave is not a function");
       return;
@@ -74,7 +73,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.title}
             onChange={handleChange}
             placeholder="Title"
-            className="w-full px-3 py-2"
+            className="w-full px-3 py-2 border border-gray-200"
           />
 
           <input
@@ -82,7 +81,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.category}
             onChange={handleChange}
             placeholder="Category"
-            className="w-full  px-3 py-2"
+            className="w-full  px-3 py-2 border border-gray-200"
           />
 
           <input
@@ -90,7 +89,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.type}
             onChange={handleChange}
             placeholder="Type"
-            className="w-full  px-3 py-2"
+            className="w-full  px-3 py-2 border border-gray-200"
           />
 
           <input
@@ -98,7 +97,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.brand}
             onChange={handleChange}
             placeholder="Brand"
-            className="w-full  px-3 py-2"
+            className="w-full  px-3 py-2 border border-gray-200"
           />
 
           <div className="grid grid-cols-2 gap-3">
@@ -108,7 +107,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               value={formData.price}
               onChange={handleChange}
               placeholder="Price"
-              className=" px-3 py-2"
+              className=" px-3 py-2 border border-gray-200"
             />
 
             <input
@@ -117,7 +116,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               value={formData.stock}
               onChange={handleChange}
               placeholder="Stock"
-              className=" px-3 py-2"
+              className=" px-3 py-2 border border-gray-200"
             />
           </div>
 
@@ -126,17 +125,17 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             value={formData.size}
             onChange={handleChange}
             placeholder="Sizes (S, M, L)"
-            className="w-full  px-3 py-2"
+            className="w-full  px-3 py-2 border border-gray-200"
           />
 
           <div className="flex justify-end gap-3 pt-4">
-            <button onClick={onClose} className="px-4 py-2 border rounded">
+            <button onClick={onClose} className="px-4 py-2  text-[#3A4752] border border-gray-200">
               Cancel
             </button>
 
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-blue-600 text-black rounded"
+              className="px-4 py-2   text-[#3A4752] border border-gray-200 hover:bg-[#E7ECFF]"
             >
               Save Changes
             </button>

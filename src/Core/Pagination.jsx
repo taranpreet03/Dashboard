@@ -6,19 +6,15 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
   const baseBtn =
-    "px-3 h-[26px] rounded-[4px] text-xs disabled:opacity-50 border transition";
+    "px-4 h-[30px] rounded-md text-sm disabled:opacity-50 border transition";
 
   const lightBtn = "bg-white text-[#3A4752] border-[#E5E7EB]";
-    const darkBtn = "bg-[#1B211A] text-white border-white/30";
-
-  const activeBtn =
-    theme === "dark"
-      ? "bg-white text-black border-transparent"
-      : "bg-gray-200 text-black border-transparent ";
+  const darkBtn = "bg-[#1B211A] text-white border-white/30";
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+
         {/* PREV */}
         <button
           disabled={currentPage === 1}
@@ -27,23 +23,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             theme === "dark" ? darkBtn : lightBtn
           }`}
         >
-          Prev
+          ← Prev
         </button>
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`${baseBtn} ${
-              page === currentPage
-                ? activeBtn
-                : theme === "dark"
-                ? darkBtn
-                : lightBtn
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+
+        
 
         {/* NEXT */}
         <button
@@ -53,8 +36,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             theme === "dark" ? darkBtn : lightBtn
           }`}
         >
-          Next
+          Next →
         </button>
+
       </div>
     </div>
   );

@@ -7,12 +7,15 @@ const SearchInput = ({
   className = "",
 }) => {
   return (
-    <div className={`flex items-center gap-2 border px-3 py-2 rounded ${className}`}>
+    <div
+      className={`flex items-center gap-2 border px-3 py-2 rounded ${className}`}
+    >
       <FaSearch className="text-gray-400" />
+
       <input
         type="text"
         placeholder={placeholder}
-        className="outline-none w-full text-sm"
+        className="outline-none w-full text-sm bg-transparent"
         value={value}
         onChange={onChange}
       />
